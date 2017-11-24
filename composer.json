@@ -1,0 +1,15 @@
+{
+  "name": "actiane/entity-change-watch-bundle",
+  "license": "MIT",
+  "type": "symfony-bundle",
+  "description": "Allows you to listen to the life cycle of your entities",
+  "autoload": {
+    "psr-4": {
+      "Actiane\\EntityChangeWatchBundle\\": ""
+    }
+  },
+  "require": {
+    "php": "^5.4|^7.0",
+    "symfony/framework-bundle": "~2.3|~3.0|~4.0"
+  }
+}
