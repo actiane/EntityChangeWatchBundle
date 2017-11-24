@@ -1,4 +1,14 @@
 # EntityChangeWatchBundle
+
+##INSTALLATION
+
+AppKernel
+```php
+  new Actiane\EntityChangeWatchBundle\EntityChangeWatchBundle(),
+```
+
+##USAGE
+
 ```yaml
 entity_change_watch:
     classes:
