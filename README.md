@@ -41,14 +41,14 @@ class MyEntityService implements InterfaceHelper
     }
     
     public function doSomethingElse(MyEntity $myEntity)
-        {
-            /*
-            
-            do something else
-            */
-    
-            return 'MyEntity:doSomethingElse:' . $myEntity->getId();
-        }
+    {
+        /*
+        
+        do something else
+        */
+
+        return 'MyEntity:doSomethingElse:' . $myEntity->getId();
+    }
 
 
 
