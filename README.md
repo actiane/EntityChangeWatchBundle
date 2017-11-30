@@ -2,14 +2,14 @@
 
 This bundle allow to watch changes made on specific properties of entities using the doctrine2 life cycles events
 
-##INSTALLATION
+## INSTALLATION
 
 AppKernel
 ```php
   new Actiane\EntityChangeWatchBundle\EntityChangeWatchBundle(),
 ```
 
-##USAGE
+## USAGE
 
 ```yaml
 entity_change_watch:
