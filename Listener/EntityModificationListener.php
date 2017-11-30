@@ -3,11 +3,16 @@
 namespace Actiane\EntityChangeWatchBundle\Listener;
 
 
-use Actiane\EntityChangeWatchBundle\Interfaces\InterfaceHelper;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
+/**
+ * Class EntityModificationListener
+ * @package Actiane\EntityChangeWatchBundle\Listener
+ */
 class EntityModificationListener
 {
     /**
@@ -24,27 +29,42 @@ class EntityModificationListener
      * @var ContainerInterface
      */
     private $serviceContainer;
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
+    /**
+     * @var PropertyAccessor
+     */
+    private $propertyAccessor;
 
     /**
      * PreUpdateListener constructor.
      *
      * @param $entityWatch
      * @param ContainerInterface $serviceContainer
+     * @param EntityManager $entityManager
+     * @param PropertyAccessor $propertyAccessor
      */
-    public function __construct($entityWatch, ContainerInterface $serviceContainer)
-    {
+    public function __construct(
+        $entityWatch,
+        ContainerInterface $serviceContainer,
+        EntityManager $entityManager,
+        PropertyAccessor $propertyAccessor
+    ) {
         $this->entityWatch = $entityWatch;
         $this->serviceContainer = $serviceContainer;
+        $this->entityManager = $entityManager;
+        $this->propertyAccessor = $propertyAccessor;
     }
 
     /**
      * @param array $arrayCallable
      * @param $entity
      *
-     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
-     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     * @param $changedProperties
      */
-    private function computeCallable(array $arrayCallable = [], $entity)
+    private function computeCallable(array $arrayCallable = [], $entity, $changedProperties)
     {
         if (array_key_exists('name', $arrayCallable) && array_key_exists('method', $arrayCallable)) {
             $this->callable[$this->computeCallableSignature($arrayCallable, $entity)] = [
@@ -52,34 +72,51 @@ class EntityModificationListener
                     $this->serviceContainer->get($arrayCallable['name']),
                     $arrayCallable['method'],
                 ],
-                'parameters' => ['entity' => $entity],
+                'parameters' => ['entity' => $entity, 'changedProperties'=> $changedProperties],
             ];
         }
     }
 
+    /**
+     * @param array $arrayCallable
+     * @param $entity
+     * @return string
+     */
     private function computeCallableSignature(array $arrayCallable = [], $entity)
     {
-        if (!($this->serviceContainer->get($arrayCallable['name']) instanceof InterfaceHelper)) {
-            throw new \Exception(
-                'Service '.
-                $arrayCallable['name'].
-                ' must implements Actiane\EntityChangeWatchBundle\Interfaces\InterfaceHelper'
-            );
-        }
-
-        return call_user_func(
-            [
-                $this->serviceContainer->get($arrayCallable['name']),
-                'computeSignature',
-            ],
-            [
-                $this->serviceContainer->get($arrayCallable['name']),
-                $arrayCallable['method'],
-            ],
-            ['entity' => $entity]
-        );
+        return $arrayCallable['name'].':'.$arrayCallable['method'].':'.join(':', $this->computeIdentifierHash($entity));
     }
 
+    /**
+     * @param $entity
+     * @return array
+     */
+    private function computeIdentifierHash($entity)
+    {
+        $metaData = $this->entityManager->getClassMetadata(get_class($entity));
+
+        $identifiers = $metaData->getIdentifierFieldNames();
+
+        $entityIdentifierHashArray = [];
+        foreach ($identifiers as $identifier) {
+
+            $value = $this->propertyAccessor->getValue($entity, $identifier);
+            if (is_object($value)) {
+                $entityIdentifierHashArray = array_merge(
+                    $entityIdentifierHashArray,
+                    $this->computeIdentifierHash($value)
+                );
+            } else {
+                $entityIdentifierHashArray[] = $value;
+            }
+        }
+
+        return $entityIdentifierHashArray;
+    }
+
+    /**
+     * @param PreUpdateEventArgs $args
+     */
     public function preUpdate(PreUpdateEventArgs $args)
     {
         $entity = $args->getEntity();
@@ -107,7 +144,7 @@ class EntityModificationListener
                 foreach ($entityWatch['properties'] as $propertyName => $actions) {
                     if (array_key_exists($propertyName, $changedProperties)) {
                         foreach ($actions as $action) {
-                            $this->computeCallable($action, $entity);
+                            $this->computeCallable($action, $entity, $changedProperties);
                         }
                     }
                 }
@@ -115,6 +152,9 @@ class EntityModificationListener
         }
     }
 
+    /**
+     * @param LifecycleEventArgs $args
+     */
     public function postUpdate(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
@@ -130,6 +170,9 @@ class EntityModificationListener
         }
     }
 
+    /**
+     * @param LifecycleEventArgs $args
+     */
     public function postPersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
@@ -151,6 +194,9 @@ class EntityModificationListener
         }
     }
 
+    /**
+     * @param LifecycleEventArgs $args
+     */
     public function postDelete(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();

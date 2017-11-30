@@ -1,5 +1,7 @@
 # EntityChangeWatchBundle
 
+This bundle allow to watch changes made on specific properties of entities using the doctrine2 life cycles events
+
 ##INSTALLATION
 
 AppKernel
@@ -28,38 +30,24 @@ entity_change_watch:
 ```
 
 
-Services must implement Actiane\EntityChangeWatchBundle\Interfaces\InterfaceHelper
-
 ```php
-class MyEntityService implements InterfaceHelper
+class MyEntityService
 {
-
-
-    public function computeSignature(array $callable, array $parameters)
-    {
-        return 'MyEntity:' . $callable[1] . ':' . $parameters['entity']->getId();
-    }
-
     public function doSomething(MyEntity $myEntity)
     {
         /*
         
         do something
         */
-
-        return 'MyEntity:doSomething:' . $myEntity->getId();
     }
     
-    public function doSomethingElse(MyEntity $myEntity)
+    public function doSomethingElse(MyEntity $myEntity, array $changedProperties)
     {
         /*
         
         do something else
         */
-
-        return 'MyEntity:doSomethingElse:' . $myEntity->getId();
     }
-
-
-
 ```
+
+The arguments $changedProperties is optional and contains an array with all the changes applied to the entity.
