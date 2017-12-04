@@ -1,10 +1,10 @@
 services:
-    entity_change_listener:
-            class: Actiane\EntityChangeWatchBundle\Listener\EntityModificationListener
+    Actiane\EntityChangeWatchBundle\Listener\EntityModificationListener:
+            autowire: false
+            autoconfigure: false
             arguments:
                 - '%entity_watch.classes%'
                 - '@service_container'
-                - '@doctrine.orm.default_entity_manager'
                 - '@property_accessor'
             tags:
                 - { name: doctrine.event_listener, event: preUpdate }

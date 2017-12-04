@@ -6,8 +6,10 @@ namespace Actiane\EntityChangeWatchBundle\Listener;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+
 
 /**
  * Class EntityModificationListener
@@ -43,18 +45,15 @@ class EntityModificationListener
      *
      * @param $entityWatch
      * @param ContainerInterface $serviceContainer
-     * @param EntityManager $entityManager
      * @param PropertyAccessor $propertyAccessor
      */
     public function __construct(
         $entityWatch,
         ContainerInterface $serviceContainer,
-        EntityManager $entityManager,
         PropertyAccessor $propertyAccessor
     ) {
         $this->entityWatch = $entityWatch;
         $this->serviceContainer = $serviceContainer;
-        $this->entityManager = $entityManager;
         $this->propertyAccessor = $propertyAccessor;
     }
 
@@ -64,7 +63,7 @@ class EntityModificationListener
      *
      * @param $changedProperties
      */
-    private function computeCallable(array $arrayCallable = [], $entity, $changedProperties)
+    private function computeCallable(array $arrayCallable = [], $entity, $changedProperties = null)
     {
         if (array_key_exists('name', $arrayCallable) && array_key_exists('method', $arrayCallable)) {
             $this->callable[$this->computeCallableSignature($arrayCallable, $entity)] = [
@@ -72,7 +71,7 @@ class EntityModificationListener
                     $this->serviceContainer->get($arrayCallable['name']),
                     $arrayCallable['method'],
                 ],
-                'parameters' => ['entity' => $entity, 'changedProperties'=> $changedProperties],
+                'parameters' => ['entity' => $entity, 'changedProperties' => $changedProperties],
             ];
         }
     }
@@ -119,6 +118,7 @@ class EntityModificationListener
      */
     public function preUpdate(PreUpdateEventArgs $args)
     {
+        $this->entityManager = $args->getEntityManager();
         $entity = $args->getEntity();
         $className = get_class($entity);
 
@@ -157,6 +157,7 @@ class EntityModificationListener
      */
     public function postUpdate(LifecycleEventArgs $args)
     {
+        $this->entityManager = $args->getEntityManager();
         $entity = $args->getEntity();
         $className = get_class($entity);
 
@@ -175,6 +176,7 @@ class EntityModificationListener
      */
     public function postPersist(LifecycleEventArgs $args)
     {
+        $this->entityManager = $args->getEntityManager();
         $entity = $args->getEntity();
         $className = get_class($entity);
 
