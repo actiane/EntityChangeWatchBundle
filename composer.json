@@ -9,8 +9,10 @@
     }
   },
   "require": {
-    "php": "^5.4|^7.0",
-    "symfony/framework-bundle": "~2.3|~3.0",
-    "doctrine/orm": "^2.5"
+    "php": "^7.1",
+    "symfony/framework-bundle": "~4.0",
+    "doctrine/orm": "^2.5.11",
+    "doctrine/doctrine-bundle": "^1.6.10",
+    "symfony/property-access": "^4.0"
   }
 }
