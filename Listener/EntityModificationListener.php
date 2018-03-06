@@ -125,13 +125,6 @@ class EntityModificationListener
         if (array_key_exists($className, $this->entityWatch) &&
             array_key_exists('update', $this->entityWatch[$className])) {
 
-            $entityWatch = $this->entityWatch[$className]['update'];
-            if (array_key_exists('all', $entityWatch) && count($args->getEntityChangeSet()) > 0) {
-                foreach ($entityWatch['all'] as $action) {
-                    $this->computeCallable($action, $entity);
-                }
-            }
-
             $collectionChanged = [];
             $scheduledCollectionsUpdates = $args->getObjectManager()->getUnitOfWork()->getScheduledCollectionUpdates();
             foreach ($scheduledCollectionsUpdates as $scheduledCollectionUpdates) {
@@ -140,6 +133,14 @@ class EntityModificationListener
             }
 
             $changedProperties = array_merge($collectionChanged, $args->getEntityChangeSet());
+
+            $entityWatch = $this->entityWatch[$className]['update'];
+            if (array_key_exists('all', $entityWatch) && count($args->getEntityChangeSet()) > 0) {
+                foreach ($entityWatch['all'] as $action) {
+                    $this->computeCallable($action, $entity, $changedProperties);
+                }
+            }
+
             if (array_key_exists('properties', $entityWatch)) {
                 foreach ($entityWatch['properties'] as $propertyName => $actions) {
                     if (array_key_exists($propertyName, $changedProperties)) {
