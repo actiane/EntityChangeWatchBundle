@@ -64,7 +64,7 @@ class EntityModificationListener
      *
      * @param $changedProperties
      */
-    private function computeCallable(array $arrayCallable = [], $entity, $changedProperties)
+    private function computeCallable(array $arrayCallable = [], $entity, $changedProperties = null)
     {
         if (array_key_exists('name', $arrayCallable) && array_key_exists('method', $arrayCallable)) {
             $this->callable[$this->computeCallableSignature($arrayCallable, $entity)] = [
