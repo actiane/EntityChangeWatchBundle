@@ -4,10 +4,7 @@ This bundle allow to watch changes made on specific properties of entities using
 
 ## INSTALLATION
 
-AppKernel
-```php
-  new Actiane\EntityChangeWatchBundle\EntityChangeWatchBundle(),
-```
+Create a yaml file inside the packages directory
 
 ## USAGE
 
