@@ -5,6 +5,8 @@ namespace Actiane\EntityChangeWatchBundle\Listener;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -24,6 +26,11 @@ class EntityModificationListener
      * @var array
      */
     private $callable = [];
+
+    /**
+     * @var array
+     */
+    private $callableFlush = [];
 
     /**
      * @var ContainerInterface
@@ -65,14 +72,28 @@ class EntityModificationListener
      */
     private function computeCallable(array $arrayCallable = [], $entity, $changedProperties = null)
     {
-        if (array_key_exists('name', $arrayCallable) && array_key_exists('method', $arrayCallable)) {
-            $this->callable[$this->computeCallableSignature($arrayCallable, $entity)] = [
-                'callable' => [
-                    $this->serviceContainer->get($arrayCallable['name']),
-                    $arrayCallable['method'],
-                ],
-                'parameters' => ['entity' => $entity, 'changedProperties' => $changedProperties],
-            ];
+        if (
+            array_key_exists('name', $arrayCallable) &&
+            array_key_exists('method', $arrayCallable) &&
+            array_key_exists('flush', $arrayCallable)
+        ) {
+            if ($arrayCallable['flush'] === true){
+                $this->callableFlush[$this->computeCallableSignature($arrayCallable, $entity)] = [
+                    'callable' => [
+                        $this->serviceContainer->get($arrayCallable['name']),
+                        $arrayCallable['method'],
+                    ],
+                    'parameters' => ['entity' => $entity, 'changedProperties' => $changedProperties],
+                ];
+            }else{
+                $this->callable[$this->computeCallableSignature($arrayCallable, $entity)] = [
+                    'callable' => [
+                        $this->serviceContainer->get($arrayCallable['name']),
+                        $arrayCallable['method'],
+                    ],
+                    'parameters' => ['entity' => $entity, 'changedProperties' => $changedProperties],
+                ];
+            }
         }
     }
 
@@ -85,45 +106,27 @@ class EntityModificationListener
      */
     private function computeCallableSignature(array $arrayCallable = [], $entity)
     {
-        return $arrayCallable['name'].':'.$arrayCallable['method'].':'.join(':', $this->computeIdentifierHash($entity));
+        return $arrayCallable['name'].':'.$arrayCallable['method'].':'.spl_object_hash($entity);
     }
 
     /**
-     * Compute the id of an entity
-     *
-     * @param $entity
-     * @return array
+     * Called before the database queries, execute all the computed callbacks
      */
-    private function computeIdentifierHash($entity)
-    {
-        $metaData = $this->entityManager->getClassMetadata(get_class($entity));
-
-        $identifiers = $metaData->getIdentifierFieldNames();
-
-        $entityIdentifierHashArray = [];
-        foreach ($identifiers as $identifier) {
-
-            $value = $this->propertyAccessor->getValue($entity, $identifier);
-            if (is_object($value)) {
-                $entityIdentifierHashArray = array_merge(
-                    $entityIdentifierHashArray,
-                    $this->computeIdentifierHash($value)
-                );
-            } else {
-                $entityIdentifierHashArray[] = $value;
-            }
-        }
-
-        return $entityIdentifierHashArray;
-    }
-
-    /**
-     * Called after the database queries, execute all the computed callbacks
-     */
-    public function postFlush()
+    public function onFlush(OnFlushEventArgs $eventArgs)
     {
         foreach ($this->callable as $key => $callableItem) {
             unset($this->callable[$key]);
+            call_user_func_array($callableItem['callable'], $callableItem['parameters']);
+        }
+    }
+
+    /**
+     * Called before the database queries, execute all the computed callbacks
+     */
+    public function postFlush(PostFlushEventArgs $eventArgs)
+    {
+        foreach ($this->callableFlush as $key => $callableItem) {
+            unset($this->callableFlush[$key]);
             call_user_func_array($callableItem['callable'], $callableItem['parameters']);
         }
     }
@@ -175,20 +178,29 @@ class EntityModificationListener
      *
      * @param LifecycleEventArgs $args
      */
+    public function prePersist(LifecycleEventArgs $args)
+    {
+        $this->persist($args);
+    }
+
+    /**
+     * Compute callbacks configured as create and flush true
+     *
+     * @param LifecycleEventArgs $args
+     */
     public function postPersist(LifecycleEventArgs $args)
+    {
+        $this->persist($args);
+    }
+
+    /**
+     * @param LifecycleEventArgs $args
+     */
+    private function persist(LifecycleEventArgs $args): void
     {
         $this->entityManager = $args->getEntityManager();
         $entity = $args->getEntity();
-        $className = get_class($entity);
-
-        if (array_key_exists($className, $this->entityWatch) &&
-            array_key_exists('create', $this->entityWatch[$className])
-        ) {
-
-            foreach ($this->entityWatch[$className]['create'] as $callable) {
-                $this->computeCallable($callable, $entity);
-            }
-        }
+        $this->computeLifecycleCallables($entity, 'create');
     }
 
     /**
@@ -200,14 +212,21 @@ class EntityModificationListener
     {
         $this->entityManager = $args->getEntityManager();
         $entity = $args->getEntity();
+        $this->computeLifecycleCallables($entity, 'delete');
+    }
+
+    /**
+     * @param $entity
+     */
+    private function computeLifecycleCallables($entity, $state): void
+    {
         $className = get_class($entity);
 
         if (array_key_exists($className, $this->entityWatch) &&
-            array_key_exists('delete', $this->entityWatch[$className])
+            array_key_exists($state, $this->entityWatch[$className])
         ) {
 
-            foreach ($this->entityWatch[$className]['delete'] as $callable) {
-
+            foreach ($this->entityWatch[$className][$state] as $callable) {
                 $this->computeCallable($callable, $entity);
             }
         }
