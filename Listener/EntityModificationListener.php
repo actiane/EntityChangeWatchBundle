@@ -123,8 +123,8 @@ class EntityModificationListener
     public function postFlush()
     {
         foreach ($this->callable as $key => $callableItem) {
-            call_user_func_array($callableItem['callable'], $callableItem['parameters']);
             unset($this->callable[$key]);
+            call_user_func_array($callableItem['callable'], $callableItem['parameters']);
         }
     }
 
