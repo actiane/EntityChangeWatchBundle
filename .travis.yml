@@ -8,6 +8,10 @@ services:
 before_install:
   - docker build -t actiane/entity_change_watch .
   - docker run --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch composer install
+  - wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.0.0/php-coveralls.phar
 
 script:
-  - docker run --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch vendor/bin/phpunit --configuration /app/phpunit.xml && php /app/php-coveralls.phar
+  - docker run --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch vendor/bin/phpunit --configuration /app/phpunit.xml
+
+after_success:
+  travis_retry php php-coveralls.phar
