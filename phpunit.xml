@@ -17,8 +17,7 @@
     </testsuites>
     <filter>
         <whitelist>
-            <directory>./DependencyInjection</directory>
-            <directory>./Listener</directory>
+            <directory>./</directory>
             <exclude>
                 <directory>./Resources</directory>
                 <directory>./Tests</directory>

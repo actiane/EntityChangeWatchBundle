@@ -8,8 +8,6 @@ services:
 before_install:
   - docker build -t actiane/entity_change_watch .
   - docker run --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch composer install
-  - docker ps -a
-  - docker run --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch
 
 script:
-  - docker run --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch
+  - docker run --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch vendor/bin/phpunit --configuration /app/phpunit.xml && php /app/php-coveralls.phar

@@ -3,6 +3,8 @@
 
 namespace Actiane\EntityChangeWatchBundle\Tests;
 
+use Actiane\EntityChangeWatchBundle\Generator\CallableGenerator;
+use Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator;
 use Actiane\EntityChangeWatchBundle\Listener\EntityModificationListener;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\SubEntity;
@@ -12,6 +14,8 @@ use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityCreateCallback;
 use Doctrine\Common\EventManager;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -48,7 +52,9 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $propertyAccessor = $this->container->get('property_accessor');
 
         $classes = self::$kernel->getContainer()->getParameter('entity_watch.classes');
-        $this->listener = new EntityModificationListener($classes, $this->container, $propertyAccessor);
+        $callableGenerator = new CallableGenerator($this->container);
+        $lifecyleCallableGenerator = new LifecycleCallableGenerator($classes, $callableGenerator, $propertyAccessor);
+        $this->listener = new EntityModificationListener($lifecyleCallableGenerator);
         $evm = new EventManager();
         $evm->addEventListener(['onFlush', 'postFlush'], $this->listener);
         $this->getMockSqliteEntityManager($evm);

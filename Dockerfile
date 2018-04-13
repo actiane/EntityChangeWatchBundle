@@ -27,5 +27,8 @@ COPY --from=composer:1.6 /usr/bin/composer /usr/bin/composer
 RUN mkdir /app
 WORKDIR /app
 
+RUN wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.0.0/php-coveralls.phar
+RUN chmod +x php-coveralls.phar
+
 ENV PATH /root/.composer/vendor/bin:$PATH
 CMD ["/app/vendor/bin/phpunit"]

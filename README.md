@@ -1,5 +1,7 @@
 # EntityChangeWatchBundle
 
+[![travis build](https://travis-ci.org/actiane/EntityChangeWatchBundle.svg?branch=master)](https://travis-ci.org/actiane/EntityChangeWatchBundle)
+
 This bundle allow to watch changes made on specific properties of entities using the doctrine2 life cycles events
 
 ## INSTALLATION
