@@ -15,4 +15,4 @@ script:
   - docker run --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch vendor/bin/phpunit --configuration /app/phpunit.xml
 
 after_success:
-  travis_retry php php-coveralls.phar
+  travis_retry docker run --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch php vendor/bin/php-coveralls -v
