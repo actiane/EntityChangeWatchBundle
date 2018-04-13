@@ -2,6 +2,7 @@
 
 [![travis build](https://travis-ci.org/actiane/EntityChangeWatchBundle.svg?branch=master)](https://travis-ci.org/actiane/EntityChangeWatchBundle)
 [![Coverage Status](https://coveralls.io/repos/github/actiane/EntityChangeWatchBundle/badge.svg?branch=master)](https://coveralls.io/github/actiane/EntityChangeWatchBundle?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/actiane/EntityChangeWatchBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/actiane/EntityChangeWatchBundle/?branch=master)
 
 This bundle allow to watch changes made on specific properties of entities using the doctrine2 life cycles events
 
