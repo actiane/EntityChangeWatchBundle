@@ -1,0 +1,15 @@
+sudo: required
+
+language: php
+
+services:
+  - docker
+
+before_install:
+  - docker build -t actiane/entity_change_watch .
+  - docker run -d -p 127.0.0.1:80:4567 actiane/entity_change_watch composer install
+  - docker ps -a
+  - docker run actiane/entity_change_watch
+
+script:
+  - docker run actiane/entity_change_watch
