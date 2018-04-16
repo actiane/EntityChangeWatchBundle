@@ -106,10 +106,8 @@ class LifecycleCallableGenerator
         $className = get_class($entity);
 
         $entityWatch = $this->entityWatch[$className]['update'];
-        if (array_key_exists('all', $entityWatch)) {
-            foreach ($entityWatch['all'] as $action) {
-                $callable += $this->callableGenerator->generateCallable($action, $entity, $changedProperties);
-            }
+        foreach ($entityWatch['all'] as $action) {
+            $callable += $this->callableGenerator->generateCallable($action, $entity, $changedProperties);
         }
 
         foreach ($entityWatch['properties'] as $propertyName => $actions) {
