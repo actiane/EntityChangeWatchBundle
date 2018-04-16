@@ -6,8 +6,6 @@ services:
             - '@Actiane\EntityChangeWatchBundle\Generator\CallableGenerator'
             - '@property_accessor'
     Actiane\EntityChangeWatchBundle\Listener\EntityModificationListener:
-            autowire: false
-            autoconfigure: false
             arguments:
                 - '@Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator'
             tags:

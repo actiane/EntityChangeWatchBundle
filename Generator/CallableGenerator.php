@@ -27,20 +27,19 @@ class CallableGenerator
     public function generateCallable(array $arrayCallable = [], $entity, $changedProperties = null)
     {
         $callable = [];
-        if (
-            array_key_exists('name', $arrayCallable) &&
-            array_key_exists('method', $arrayCallable) &&
-            array_key_exists('flush', $arrayCallable)
-        ) {
-            $callable[$this->generateCallableSignature($arrayCallable, $entity)] = [
-                'callable' => [
-                    $this->callbacks[$arrayCallable['name']],
-                    $arrayCallable['method'],
-                ],
-                'parameters' => ['entity' => $entity, 'changedProperties' => $changedProperties],
-                'flush' => $arrayCallable['flush'],
-            ];
+
+        if (!array_key_exists($arrayCallable['name'], $this->callbacks)) {
+            throw new \RuntimeException($arrayCallable['name'].' Not Found.');
         }
+
+        $callable[$this->generateCallableSignature($arrayCallable, $entity)] = [
+            'callable' => [
+                $this->callbacks[$arrayCallable['name']],
+                $arrayCallable['method'],
+            ],
+            'parameters' => ['entity' => $entity, 'changedProperties' => $changedProperties],
+            'flush' => $arrayCallable['flush'],
+        ];
 
         return $callable;
     }

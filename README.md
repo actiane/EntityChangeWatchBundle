@@ -59,6 +59,8 @@ class MyEntityService
     }
 ```
 
+All callback services must be tagged with ```actiane.entitychangewatch.callback```
+
 The arguments $changedProperties is optional and contains an array with all the changes applied to the entity.
 
 A callback is called after the flush, you can not execute another flush in this method.

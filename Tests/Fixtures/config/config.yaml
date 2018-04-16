@@ -17,6 +17,9 @@ services:
     Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityCreateCallback:
         public: true
         tags: [actiane.entitychangewatch.callback]
+    Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityUpdateCallback:
+        public: true
+        tags: [actiane.entitychangewatch.callback]
 
 framework:
     secret: 'secret'

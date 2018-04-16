@@ -13,9 +13,9 @@ use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityCreateCallback;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityUpdateCallback;
 use Doctrine\Common\EventManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * Class appTest
@@ -32,11 +32,13 @@ class EntityModificationListenerTest extends BaseTestCaseORM
 
     const ENTITY = "Actiane\\EntityChangeWatchBundle\\Tests\\Fixtures\\Entity\\Entity";
 
+    const SUB_ENTITY = "Actiane\\EntityChangeWatchBundle\\Tests\\Fixtures\\Entity\\SubEntity";
+
     protected function getUsedEntityFixtures()
     {
         return [
             self::ENTITY,
-            "Actiane\\EntityChangeWatchBundle\\Tests\\Fixtures\\Entity\\SubEntity",
+            self::SUB_ENTITY,
         ];
     }
 
@@ -265,6 +267,58 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $this->reset();
     }
 
+    public function testUpdateSubEntity()
+    {
+        $subEntity = new SubEntity();
+        $subEntity->setField('testUpdateSubEntity_1');
+
+        $this->em->persist($subEntity);
+        $this->em->flush();
+
+        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAccess);
+        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
+        $this->assertFalse($this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
+        $this->assertFalse(
+            $this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
+        );
+        $this->assertFalse($this->container->get(SubEntityCreateCallback::class)->testCreateAccess);
+        $this->assertTrue($this->container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
+
+        $this->reset();
+        $id = $subEntity->getId();
+        $this->em->clear();
+
+        $test = $this->em->getRepository(self::SUB_ENTITY)->find($id);
+        $test->setField('treter');
+        $this->em->flush();
+
+        $this->assertFalse($this->container->get(SubEntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse($this->container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse($this->container->get(SubEntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertTrue($this->container->get(SubEntityUpdateCallback::class)->testUpdateAfterAccess);
+    }
+
+    public function testDeleteSubEntity()
+    {
+        $subEntity = new SubEntity();
+        $subEntity->setField('testUpdateSubEntity_1');
+
+        $this->em->persist($subEntity);
+        $this->em->flush();
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\NotTaggedServiceCallback Not Found.'
+        );
+
+        $this->em->remove($subEntity);
+        $this->em->flush();
+    }
+
     private function reset(): void
     {
         $this->container->get(EntityCreateCallback::class)->reset();
@@ -272,5 +326,6 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $this->container->get(EntityDeleteCallback::class)->reset();
         $this->container->get(EntityUpdateSubEntitiesCallback::class)->reset();
         $this->container->get(SubEntityCreateCallback::class)->reset();
+        $this->container->get(SubEntityUpdateCallback::class)->reset();
     }
 }

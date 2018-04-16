@@ -73,7 +73,9 @@ YAML;
     public function testConfigurationInvalid($inputConfig)
     {
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('Invalid configuration for path "entity_change_watch.classes": Class inexistante');
+        $this->expectExceptionMessage(
+            'Invalid configuration for path "entity_change_watch.classes": Class not found'
+        );
         $configuration = new Configuration();
 
         $node = $configuration->getConfigTreeBuilder()
@@ -89,53 +91,53 @@ YAML;
             'test configuration' => [
                 Yaml::parse($this->validYaml),
                 [
-                        'classes' => [
-                            'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity' => [
-                                'create' => [
+                    'classes' => [
+                        'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity' => [
+                            'create' => [
+                                [
+                                    'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback',
+                                    'method' => 'testCreate',
+                                    'flush' => false,
+                                ],
+
+                            ],
+
+                            'update' => [
+                                'all' => [
                                     [
-                                        'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback',
-                                        'method' => 'testCreate',
+                                        'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback',
+                                        'method' => 'testUpdate',
                                         'flush' => false,
                                     ],
 
                                 ],
 
-                                'update' => [
-                                    'all' => [
+                                'properties' => [
+                                    'subEntities' => [
                                         [
-                                            'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback',
-                                            'method' => 'testUpdate',
+                                            'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback',
+                                            'method' => 'testUpdateSubEntities',
                                             'flush' => false,
                                         ],
 
-                                    ],
-
-                                    'properties' => [
-                                        'subEntities' => [
-                                            [
-                                                'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback',
-                                                'method' => 'testUpdateSubEntities',
-                                                'flush' => false,
-                                            ],
-
-                                        ],
-
-                                    ],
-
-                                ],
-
-                                'delete' => [
-                                    [
-                                        'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback',
-                                        'method' => 'testDelete',
-                                        'flush' => false,
                                     ],
 
                                 ],
 
                             ],
 
+                            'delete' => [
+                                [
+                                    'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback',
+                                    'method' => 'testDelete',
+                                    'flush' => false,
+                                ],
+
+                            ],
+
                         ],
+
+                    ],
                 ],
             ],
         ];

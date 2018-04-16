@@ -17,16 +17,16 @@ class Configuration implements ConfigurationInterface
 
 
         $rootNode->children()
-                    ->arrayNode('classes')->validate()->ifTrue(function($classes){
+                    ->arrayNode('classes')->validate()->ifTrue(function ($classes) {
 
-                        foreach($classes as $key=>$value)
-                        {
-                            if (!class_exists($key))
-                                return $key;
+                    foreach ($classes as $key => $value) {
+                        if (!class_exists($key)) {
+                            return $key;
                         }
-                        return false;
+                    }
 
-            })->thenInvalid('Class inexistante')->end()
+                    return false;
+                })->thenInvalid('Class not found')->end()
                         ->prototype('array')
                             ->children()
                                 ->arrayNode('update')
@@ -74,7 +74,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                     ->end()
-                 ->end()
+                    ->end()
         ;
 
         return $treeBuilder;

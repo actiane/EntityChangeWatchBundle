@@ -38,40 +38,38 @@ class LifecycleCallableGenerator
     }
 
     /**
-     * @param UnitOfWork $uow
+     * @param UnitOfWork $unitOfWork
      *
      * @return array
      */
-    public function generateLifeCycleCallable(UnitOfWork $uow): array
+    public function generateLifeCycleCallable(UnitOfWork $unitOfWork): array
     {
         $callable = [];
         $lifeCycleEntities = [];
-        foreach ($uow->getScheduledEntityInsertions() as $entity) {
-            $lifeCycleEntities[spl_object_hash($entity)] = $entity;
-            $this->generateCreateDeleteCallables($callable, $entity, 'create');
+        foreach ($unitOfWork->getScheduledEntityInsertions() as $entityInsertion) {
+            $this->generateCreateDeleteCallables($callable, $lifeCycleEntities, $entityInsertion, 'create');
         }
 
-        foreach ($uow->getScheduledEntityDeletions() as $entity) {
-            $lifeCycleEntities[spl_object_hash($entity)] = $entity;
-            $this->generateCreateDeleteCallables($callable, $entity, 'delete');
+        foreach ($unitOfWork->getScheduledEntityDeletions() as $entityDeletion) {
+            $this->generateCreateDeleteCallables($callable, $lifeCycleEntities, $entityDeletion, 'delete');
         }
 
-        foreach ($uow->getScheduledCollectionUpdates() as $entity) {
-            if (array_key_exists(spl_object_hash($entity->getOwner()), $lifeCycleEntities)) {
+        foreach ($unitOfWork->getScheduledCollectionUpdates() as $collectionUpdate) {
+            if (array_key_exists(spl_object_hash($collectionUpdate->getOwner()), $lifeCycleEntities)) {
                 continue;
             }
             $this->generateUpdateCallables(
                 $callable,
-                [$entity->getMapping()['fieldName'] => $entity->getValues()],
-                $entity->getOwner()
+                [$collectionUpdate->getMapping()['fieldName'] => $collectionUpdate->getValues()],
+                $collectionUpdate->getOwner()
             );
         }
 
-        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+        foreach ($unitOfWork->getScheduledEntityUpdates() as $entityUpdate) {
             $this->generateUpdateCallables(
                 $callable,
-                $uow->getEntityChangeSet($entity),
-                $entity
+                $unitOfWork->getEntityChangeSet($entityUpdate),
+                $entityUpdate
             );
         }
 
@@ -84,8 +82,9 @@ class LifecycleCallableGenerator
      * @param $entity
      * @param $state
      */
-    private function generateCreateDeleteCallables(&$callable, $entity, $state): void
+    private function generateCreateDeleteCallables(&$callable, &$lifeCycleEntities, $entity, $state): void
     {
+        $lifeCycleEntities[spl_object_hash($entity)] = $entity;
         $className = get_class($entity);
 
         if (array_key_exists($className, $this->entityWatch) &&
@@ -107,24 +106,23 @@ class LifecycleCallableGenerator
         $className = get_class($entity);
 
         $entityWatch = $this->entityWatch[$className]['update'];
-        if (array_key_exists('all', $entityWatch) && count($changedProperties) > 0) {
+        if (array_key_exists('all', $entityWatch)) {
             foreach ($entityWatch['all'] as $action) {
                 $callable += $this->callableGenerator->generateCallable($action, $entity, $changedProperties);
             }
         }
 
-        if (array_key_exists('properties', $entityWatch)) {
-            foreach ($entityWatch['properties'] as $propertyName => $actions) {
-                if (array_key_exists($propertyName, $changedProperties)) {
-                    foreach ($actions as $action) {
-                        $callable += $this->callableGenerator->generateCallable(
-                            $action,
-                            $entity,
-                            $changedProperties
-                        );
-                    }
+        foreach ($entityWatch['properties'] as $propertyName => $actions) {
+            if (array_key_exists($propertyName, $changedProperties)) {
+                foreach ($actions as $action) {
+                    $callable += $this->callableGenerator->generateCallable(
+                        $action,
+                        $entity,
+                        $changedProperties
+                    );
                 }
             }
         }
+
     }
 }
