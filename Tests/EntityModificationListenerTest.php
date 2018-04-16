@@ -14,9 +14,8 @@ use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityCreateCallback;
 use Doctrine\Common\EventManager;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * Class appTest
@@ -52,7 +51,8 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $propertyAccessor = $this->container->get('property_accessor');
 
         $classes = self::$kernel->getContainer()->getParameter('entity_watch.classes');
-        $callableGenerator = new CallableGenerator($this->container);
+        $callableGenerator = $this->container->get(CallableGenerator::class);
+        //$callableGenerator = new CallableGenerator($this->container);
         $lifecyleCallableGenerator = new LifecycleCallableGenerator($classes, $callableGenerator, $propertyAccessor);
         $this->listener = new EntityModificationListener($lifecyleCallableGenerator);
         $evm = new EventManager();

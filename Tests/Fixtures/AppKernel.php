@@ -5,7 +5,6 @@ namespace Actiane\EntityChangeWatchBundle\Tests\Fixtures;
 
 use Actiane\EntityChangeWatchBundle\EntityChangeWatchBundle;
 use Actiane\EntityChangeWatchBundle\Tests\TestContainerPass;
-use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -21,10 +20,10 @@ class AppKernel extends Kernel
     {
         return [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new DoctrineBundle(),
             new EntityChangeWatchBundle(),
         ];
     }
+
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(__DIR__.'/config/config.yaml');
@@ -33,9 +32,7 @@ class AppKernel extends Kernel
     protected function build(ContainerBuilder $container)
     {
         parent::build($container);
-        if ($this->getEnvironment() === 'test') {
-            $container->addCompilerPass(new TestContainerPass(), PassConfig::TYPE_OPTIMIZE);
-        }
+        $container->addCompilerPass(new TestContainerPass(), PassConfig::TYPE_OPTIMIZE);
     }
 
 

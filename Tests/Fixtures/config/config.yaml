@@ -4,14 +4,19 @@ imports:
 services:
     Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback:
         public: true
+        tags: [actiane.entitychangewatch.callback]
     Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback:
         public: true
+        tags: [actiane.entitychangewatch.callback]
     Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback:
         public: true
+        tags: [actiane.entitychangewatch.callback]
     Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback:
         public: true
+        tags: [actiane.entitychangewatch.callback]
     Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityCreateCallback:
         public: true
+        tags: [actiane.entitychangewatch.callback]
 
 framework:
     secret: 'secret'

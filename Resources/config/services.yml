@@ -1,6 +1,5 @@
 services:
-    Actiane\EntityChangeWatchBundle\Generator\CallableGenerator:
-        arguments: [!tagged actiane.entitychangewatch.callback]
+    Actiane\EntityChangeWatchBundle\Generator\CallableGenerator: ~
     Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator:
         arguments:
             - '%entity_watch.classes%'
