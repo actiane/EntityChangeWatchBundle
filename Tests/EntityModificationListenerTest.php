@@ -7,6 +7,7 @@ use Actiane\EntityChangeWatchBundle\Generator\CallableGenerator;
 use Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator;
 use Actiane\EntityChangeWatchBundle\Listener\EntityModificationListener;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\NotWatchedEntity;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\SubEntity;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback;
@@ -31,15 +32,18 @@ class EntityModificationListenerTest extends BaseTestCaseORM
      */
     private $container;
 
-    const ENTITY = "Actiane\\EntityChangeWatchBundle\\Tests\\Fixtures\\Entity\\Entity";
+    const ENTITY = Entity::class;
 
-    const SUB_ENTITY = "Actiane\\EntityChangeWatchBundle\\Tests\\Fixtures\\Entity\\SubEntity";
+    const SUB_ENTITY = SubEntity::class;
+
+    const NOT_WATCHED_ENTITY = NotWatchedEntity::class;
 
     protected function getUsedEntityFixtures()
     {
         return [
             self::ENTITY,
             self::SUB_ENTITY,
+            self::NOT_WATCHED_ENTITY
         ];
     }
 
@@ -316,6 +320,38 @@ class EntityModificationListenerTest extends BaseTestCaseORM
 
         $this->em->remove($subEntity);
         $this->em->flush();
+    }
+
+    public function testNotWatchedEntity(){
+        $entity = new NotWatchedEntity();
+        $entity->setTitle('fdsfs');
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $id = $entity->getId();
+        $this->em->clear();
+
+        $test = $this->em->getRepository(self::NOT_WATCHED_ENTITY)->find($id);
+        $test->setTitle('fsdfsdfs');
+        $this->em->flush();
+
+        $this->em->remove($test);
+        $this->em->flush();
+
+        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAccess);
+        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
+        $this->assertFalse($this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
+        $this->assertFalse(
+            $this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
+        );
+        $this->assertFalse($this->container->get(SubEntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse($this->container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
+
+
     }
 
     private function reset(): void

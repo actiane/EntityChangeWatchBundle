@@ -87,12 +87,12 @@ class LifecycleCallableGenerator
         $lifeCycleEntities[spl_object_hash($entity)] = $entity;
         $className = get_class($entity);
 
-        if (array_key_exists($className, $this->entityWatch) &&
-            array_key_exists($state, $this->entityWatch[$className])
-        ) {
-            foreach ($this->entityWatch[$className][$state] as $action) {
-                $callable += $this->callableGenerator->generateCallable($action, $entity);
-            }
+        if (!array_key_exists($className, $this->entityWatch)) {
+            return;
+        }
+
+        foreach ($this->entityWatch[$className][$state] as $action) {
+            $callable += $this->callableGenerator->generateCallable($action, $entity);
         }
     }
 
@@ -104,6 +104,10 @@ class LifecycleCallableGenerator
     private function generateUpdateCallables(&$callable, $changedProperties, $entity): void
     {
         $className = get_class($entity);
+
+        if (!array_key_exists($className, $this->entityWatch)) {
+            return;
+        }
 
         $entityWatch = $this->entityWatch[$className]['update'];
         foreach ($entityWatch['all'] as $action) {
