@@ -1,5 +1,10 @@
 services:
-    Actiane\EntityChangeWatchBundle\Generator\CallableGenerator: ~
+    actiane.entitywatch.callback_locator:
+        class: 'Symfony\Component\DependencyInjection\ServiceLocator'
+        tags: ['container.service_locator']
+    Actiane\EntityChangeWatchBundle\Generator\CallableGenerator:
+        arguments:
+            - '@actiane.entitywatch.callback_locator'
     Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator:
         arguments:
             - '%entity_watch.classes%'

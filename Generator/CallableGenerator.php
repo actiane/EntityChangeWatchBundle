@@ -3,6 +3,8 @@
 
 namespace Actiane\EntityChangeWatchBundle\Generator;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Class CallableGenerator
  * @package Actiane\EntityChangeWatchBundle\Generator
@@ -10,9 +12,17 @@ namespace Actiane\EntityChangeWatchBundle\Generator;
 class CallableGenerator
 {
     /**
-     * @var array
+     * @var ContainerInterface
      */
-    private $callbacks = [];
+    private $serviceContainer;
+
+    /**
+     * @param ContainerInterface $serviceContainer
+     */
+    public function __construct($serviceContainer)
+    {
+        $this->serviceContainer = $serviceContainer;
+    }
 
     /**
      * Generate the arrays used for call_user_func_array
@@ -28,13 +38,9 @@ class CallableGenerator
     {
         $callable = [];
 
-        if (!array_key_exists($arrayCallable['name'], $this->callbacks)) {
-            throw new \RuntimeException($arrayCallable['name'].' Not Found.');
-        }
-
         $callable[$this->generateCallableSignature($arrayCallable, $entity)] = [
             'callable' => [
-                $this->callbacks[$arrayCallable['name']],
+                $this->serviceContainer->get($arrayCallable['name']),
                 $arrayCallable['method'],
             ],
             'parameters' => ['entity' => $entity, 'changedProperties' => $changedProperties],
@@ -55,10 +61,5 @@ class CallableGenerator
     private function generateCallableSignature(array $arrayCallable = [], $entity)
     {
         return $arrayCallable['name'].':'.$arrayCallable['method'].':'.spl_object_hash($entity);
-    }
-
-    public function addCallback($key, $reference)
-    {
-        $this->callbacks[$key] = $reference;
     }
 }

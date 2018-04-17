@@ -16,6 +16,7 @@ use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityCreateCallb
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityUpdateCallback;
 use Doctrine\Common\EventManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 /**
  * Class appTest
@@ -308,9 +309,9 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $this->em->persist($subEntity);
         $this->em->flush();
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(ServiceNotFoundException::class);
         $this->expectExceptionMessage(
-            'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\NotTaggedServiceCallback Not Found.'
+            'Service "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\NotTaggedServiceCallback" not found: the container inside "Actiane\EntityChangeWatchBundle\Generator\CallableGenerator" is a smaller service locator that only knows about the "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback", "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback", "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback", "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback", "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityCreateCallback" and "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityUpdateCallback" services.'
         );
 
         $this->em->remove($subEntity);

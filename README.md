@@ -43,12 +43,12 @@ class MyEntityService
     }
     
     public function doSomethingBeforeFlush(MyEntity $myEntity)
-        {
-            /*
-            
-            do something before the flush
-            */
-        }
+    {
+        /*
+        
+        do something before the flush
+        */
+    }
     
     public function doSomethingElse(MyEntity $myEntity, $entityManager, array $changedProperties)
     {
@@ -63,7 +63,7 @@ All callback services must be tagged with ```actiane.entitychangewatch.callback`
 
 The arguments $changedProperties is optional and contains an array with all the changes applied to the entity.
 
-The argument $entityManager is also available since you can't inject it in your callbacks services
+The argument $entityManager is also available
 
 A callback is called after the flush, you can not execute another flush in this method.
 

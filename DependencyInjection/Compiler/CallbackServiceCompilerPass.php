@@ -3,7 +3,7 @@
 
 namespace Actiane\EntityChangeWatchBundle\DependencyInjection\Compiler;
 
-use Actiane\EntityChangeWatchBundle\Generator\CallableGenerator;
+use Actiane\EntityChangeWatchBundle\DependencyInjection\ServiceLocator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -16,12 +16,15 @@ class CallbackServiceCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $definition = $container->findDefinition(CallableGenerator::class);
+        $definition = $container->findDefinition('actiane.entitywatch.callback_locator');
 
         $taggedServices = $container->findTaggedServiceIds('actiane.entitychangewatch.callback');
 
+        $callbacks = [];
         foreach ($taggedServices as $id => $tags) {
-            $definition->addMethodCall('addCallback', [$id, new Reference($id)]);
+            $callbacks[$id] = new Reference($id);
         }
+
+        $definition->addArgument($callbacks);
     }
 }
