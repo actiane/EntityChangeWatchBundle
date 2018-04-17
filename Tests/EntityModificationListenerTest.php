@@ -53,10 +53,8 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $propertyAccessor = $this->container->get('property_accessor');
 
         $classes = self::$kernel->getContainer()->getParameter('entity_watch.classes');
-        $callableGenerator = $this->container->get(CallableGenerator::class);
-        //$callableGenerator = new CallableGenerator($this->container);
-        $lifecyleCallableGenerator = new LifecycleCallableGenerator($classes, $callableGenerator, $propertyAccessor);
-        $this->listener = new EntityModificationListener($lifecyleCallableGenerator);
+
+        $this->listener = $this->container->get(EntityModificationListener::class);
         $evm = new EventManager();
         $evm->addEventListener(['onFlush', 'postFlush'], $this->listener);
         $this->getMockSqliteEntityManager($evm);

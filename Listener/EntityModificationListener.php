@@ -5,6 +5,7 @@ namespace Actiane\EntityChangeWatchBundle\Listener;
 
 use Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator;
 use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 
 /**
  * Class EntityModificationListener
@@ -37,8 +38,9 @@ class EntityModificationListener
      */
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
+        $entityManager = $eventArgs->getEntityManager();
         $this->callable = $this->lifecycleCallableGenerator->generateLifeCycleCallable(
-            $eventArgs->getEntityManager()->getUnitOfWork()
+            $entityManager->getUnitOfWork()
         );
 
         foreach ($this->callable as $key => $callableItem) {
@@ -46,18 +48,26 @@ class EntityModificationListener
                 continue;
             }
             unset($this->callable[$key]);
-            call_user_func_array($callableItem['callable'], $callableItem['parameters']);
+            call_user_func_array(
+                $callableItem['callable'],
+                ['entityManager' => $entityManager] + $callableItem['parameters']
+            );
         }
     }
 
     /**
      * Called before the database queries, execute all the Generate $this->callableFlush
+     *
+     * @param PostFlushEventArgs $eventArgs
      */
-    public function postFlush()
+    public function postFlush(PostFlushEventArgs $eventArgs)
     {
         foreach ($this->callable as $key => $callableItem) {
             unset($this->callable[$key]);
-            call_user_func_array($callableItem['callable'], $callableItem['parameters']);
+            call_user_func_array(
+                $callableItem['callable'],
+                ['entityManager' => $eventArgs->getEntityManager()] + $callableItem['parameters']
+            );
         }
     }
 }
