@@ -3,7 +3,6 @@
 
 namespace Actiane\EntityChangeWatchBundle\DependencyInjection\Compiler;
 
-use Actiane\EntityChangeWatchBundle\DependencyInjection\ServiceLocator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

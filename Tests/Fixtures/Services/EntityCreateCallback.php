@@ -3,6 +3,9 @@
 
 namespace Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services;
 
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity;
+use Doctrine\ORM\EntityManagerInterface;
+
 /**
  * Class EntityCreateCallback
  * @package Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services
@@ -13,12 +16,12 @@ class EntityCreateCallback
 
     public $testCreateAfterAccess = false;
 
-    public function testCreate()
+    public function testCreate(Entity $entity, $changedProperties, EntityManagerInterface $entityManager)
     {
         $this->testCreateAccess = true;
     }
 
-    public function testCreateAfter()
+    public function testCreateAfter(Entity $entity, $changedProperties, EntityManagerInterface $entityManager)
     {
         $this->testCreateAfterAccess = true;
     }

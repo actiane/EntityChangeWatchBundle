@@ -12,6 +12,7 @@ Create a yaml file inside the packages directory
 
 ## USAGE
 
+### Examples
 ```yaml
 entity_change_watch:
     classes:
@@ -50,7 +51,7 @@ class MyEntityService
         */
     }
     
-    public function doSomethingElse(MyEntity $myEntity, $entityManager, array $changedProperties)
+    public function doSomethingElse(MyEntity $myEntity, array $changedProperties, EntityManagerInterface $entityManager)
     {
         /*
         
@@ -59,11 +60,16 @@ class MyEntityService
     }
 ```
 
+### Callbacks services definition
 All callback services must be tagged with ```actiane.entitychangewatch.callback```
 
-The arguments $changedProperties is optional and contains an array with all the changes applied to the entity.
+### Callbacks method
 
-The argument $entityManager is also available
+Please note that the orders of the arguments matter
+
+The first argument is the entity
+The second argument $changedProperties contains an array with all the changes applied to the entity.
+The third argument $$entityManager is the entityManager
 
 A callback is called after the flush, you can not execute another flush in this method.
 
