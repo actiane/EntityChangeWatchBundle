@@ -7,7 +7,7 @@
          bootstrap="Tests/bootstrap.php"
 >
     <php>
-        <server name="KERNEL_DIR" value="./tests/Fixtures/" />
+        <server name="KERNEL_DIR" value="./Tests/Fixtures/" />
         <server name="KERNEL_CLASS" value="Actiane\EntityChangeWatchBundle\Tests\Fixtures\AppKernel" />
     </php>
     <testsuites>
