@@ -5,8 +5,15 @@ language: php
 services:
   - docker
 
+matrix:
+  include:
+    - env: SYMFONY_VERSION=2.8.*
+    - env: SYMFONY_VERSION=3.3.*
+    - env: SYMFONY_VERSION=4.0.*
+
 before_install:
   - docker build -t actiane/entity_change_watch .
+  - docker run --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch composer require symfony/symfony:${SYMFONY_VERSION} --no-update
   - docker run --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch composer install
   - wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.0.0/php-coveralls.phar
 
