@@ -105,7 +105,8 @@ class LifecycleCallableGenerator
     {
         $className = get_class($entity);
 
-        if (!array_key_exists($className, $this->entityWatch)) {
+        if (!array_key_exists($className, $this->entityWatch) ||
+            !array_key_exists('update', $this->entityWatch[$className])) {
             return;
         }
 
