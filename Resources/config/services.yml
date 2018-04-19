@@ -1,13 +1,15 @@
 services:
+    Actiane\EntityChangeWatchBundle\Generator\CallableGenerator:
+        arguments:
+            - '@service_container'
+    Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator:
+        arguments:
+            - '%entity_watch.classes%'
+            - '@Actiane\EntityChangeWatchBundle\Generator\CallableGenerator'
+            - '@property_accessor'
     Actiane\EntityChangeWatchBundle\Listener\EntityModificationListener:
-            autowire: false
-            autoconfigure: false
             arguments:
-                - '%entity_watch.classes%'
-                - '@service_container'
-                - '@property_accessor'
+                - '@Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator'
             tags:
-                - { name: doctrine.event_listener, event: preUpdate }
-                - { name: doctrine.event_listener, event: postPersist }
-                - { name: doctrine.event_listener, event: preRemove }
+                - { name: doctrine.event_listener, event: onFlush }
                 - { name: doctrine.event_listener, event: postFlush }

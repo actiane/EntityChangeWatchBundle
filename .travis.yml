@@ -1,0 +1,18 @@
+sudo: required
+
+language: php
+
+services:
+  - docker
+
+before_install:
+  - docker build -t actiane/entity_change_watch .
+  - docker run --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch composer install
+  - wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.0.0/php-coveralls.phar
+
+script:
+  - mkdir -p build/logs
+  - docker run --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch vendor/bin/phpunit --configuration /app/phpunit.xml
+
+after_success:
+  travis_retry docker run -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID --mount type=bind,source="$(pwd)"/,target=/app actiane/entity_change_watch php vendor/bin/php-coveralls -v

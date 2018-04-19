@@ -1,0 +1,16 @@
+entity_change_watch:
+    classes:
+        Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity:
+            create:
+                - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback', method: 'testCreate'}
+            update:
+                all:
+                    - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback', method: 'testUpdate'}
+                properties:
+                    subEntities:
+                        - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback', method: 'testUpdateSubEntities'}
+            delete:
+                - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback', method: 'testDelete'}
+        Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\SubEntity:
+            delete:
+                - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\NotTaggedServiceCallback', method: 'testDelete'}

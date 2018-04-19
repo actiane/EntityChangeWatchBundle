@@ -8,11 +8,21 @@
       "Actiane\\EntityChangeWatchBundle\\": ""
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Actiane\\EntityChangeWatchBundle\\Tests\\": "Tests/"
+    }
+  },
   "require": {
     "php": "^7.1",
     "symfony/framework-bundle": "~3.3|~4.0",
     "doctrine/orm": "^2.5.11",
     "doctrine/doctrine-bundle": "^1.6.10",
     "symfony/property-access": "~3.3|~4.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.1",
+    "symfony/yaml": "^4.0",
+    "php-coveralls/php-coveralls": "^2.0"
   }
 }

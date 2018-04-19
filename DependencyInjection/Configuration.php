@@ -32,7 +32,7 @@ class Configuration implements ConfigurationInterface
                         }
                         return false;
 
-            })->thenInvalid('Class inexistante')->end()
+            })->thenInvalid('Class not found')->end()
                         ->prototype('array')
                             ->children()
                                 ->arrayNode('update')

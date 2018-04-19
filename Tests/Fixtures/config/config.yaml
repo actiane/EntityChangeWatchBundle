@@ -1,0 +1,19 @@
+imports:
+    - { resource: entity_change_watch.yaml }
+
+services:
+    Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback:
+        public: true
+    Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback:
+        public: true
+    Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback:
+        public: true
+    Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback:
+        public: true
+    Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityCreateCallback:
+        public: true
+    Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityUpdateCallback:
+        public: true
+
+framework:
+    secret: 'secret'
