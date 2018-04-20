@@ -11,6 +11,10 @@ if (!is_file($loaderFile = __DIR__.'/../vendor/autoload.php') && !is_file(
 
 $loader = require $loaderFile;
 
+if (!class_exists('\PHPUnit_Framework_TestCase') && class_exists('\PHPUnit\Framework\TestCase')) {
+    class_alias('\PHPUnit\Framework\TestCase', '\PHPUnit_Framework_TestCase');
+}
+
 \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 
 $reader = new \Doctrine\Common\Annotations\AnnotationReader();

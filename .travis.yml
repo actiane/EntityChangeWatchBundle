@@ -21,7 +21,7 @@ before_install:
 
 script:
   - mkdir -p build/logs
-  - docker run --mount type=bind,source="$(pwd)"/,target=/app emilienpuget/entitychangewatch vendor/bin/simple-phpunit --configuration /app/phpunit.xml
+  - docker run --mount type=bind,source="$(pwd)"/,target=/app emilienpuget/entitychangewatch vendor/bin/phpunit --configuration /app/phpunit.xml
 
 after_success:
   travis_retry docker run -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID --mount type=bind,source="$(pwd)"/,target=/app emilienpuget/entitychangewatch php vendor/bin/php-coveralls -v
