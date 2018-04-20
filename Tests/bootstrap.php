@@ -1,7 +1,7 @@
 <?php
 
-$filesystem = new \Symfony\Component\Filesystem\Filesystem();
-$filesystem->remove(__DIR__.'/Fixtures/cache/test');
+//$filesystem = new \Symfony\Component\Filesystem\Filesystem();
+//$filesystem->remove(__DIR__.'/Fixtures/cache/test');
 
 if (!is_file($loaderFile = __DIR__.'/../vendor/autoload.php') && !is_file(
         $loaderFile = __DIR__.'/../../../../../../vendor/autoload.php'

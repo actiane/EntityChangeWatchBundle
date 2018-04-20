@@ -1,15 +1,18 @@
 services:
     Actiane\EntityChangeWatchBundle\Generator\CallableGenerator:
+        class: Actiane\EntityChangeWatchBundle\Generator\CallableGenerator
         arguments:
             - '@service_container'
     Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator:
+        class: Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator
         arguments:
             - '%entity_watch.classes%'
             - '@Actiane\EntityChangeWatchBundle\Generator\CallableGenerator'
             - '@property_accessor'
     Actiane\EntityChangeWatchBundle\Listener\EntityModificationListener:
-            arguments:
-                - '@Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator'
-            tags:
-                - { name: doctrine.event_listener, event: onFlush }
-                - { name: doctrine.event_listener, event: postFlush }
+        class: Actiane\EntityChangeWatchBundle\Listener\EntityModificationListener
+        arguments:
+            - '@Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator'
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: postFlush }

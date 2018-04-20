@@ -4,6 +4,7 @@
 namespace Actiane\EntityChangeWatchBundle\Tests;
 
 use Actiane\EntityChangeWatchBundle\Listener\EntityModificationListener;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\AppKernel;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\NotWatchedEntity;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\SubEntity;
@@ -44,6 +45,14 @@ class EntityModificationListenerTest extends BaseTestCaseORM
             self::NOT_WATCHED_ENTITY,
         ];
     }
+
+    protected static function createKernel(array $options = [])
+    {
+        require_once 'Fixtures/AppKernel.php';
+        return new AppKernel(isset($options['environment']) ? $options['environment'] : 'test',
+                             isset($options['debug']) ? $options['debug'] : true);
+    }
+
 
     protected function setUp()
     {
@@ -243,9 +252,6 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $this->em->flush();
 
         $this->expectException(ServiceNotFoundException::class);
-        $this->expectExceptionMessage(
-            'You have requested a non-existent service "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\NotTaggedServiceCallback". Did you mean one of these: "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback", "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback", "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback", "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback", "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityCreateCallback", "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityUpdateCallback"?'
-        );
 
         $this->em->remove($subEntity);
         $this->em->flush();
