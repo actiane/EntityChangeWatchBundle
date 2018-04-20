@@ -27,11 +27,6 @@ class EntityModificationListenerTest extends BaseTestCaseORM
 {
     protected $listener;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
     const ENTITY = Entity::class;
 
     const SUB_ENTITY = SubEntity::class;
@@ -53,13 +48,7 @@ class EntityModificationListenerTest extends BaseTestCaseORM
 
         self::bootKernel();
 
-        $this->container = self::$kernel->getContainer();
-
-        $propertyAccessor = $this->container->get('property_accessor');
-
-        $classes = self::$kernel->getContainer()->getParameter('entity_watch.classes');
-
-        $this->listener = $this->container->get(EntityModificationListener::class);
+        $this->listener = self::$container->get(EntityModificationListener::class);
         $evm = new EventManager();
         $evm->addEventListener(['onFlush', 'postFlush'], $this->listener);
         $this->getMockSqliteEntityManager($evm);
@@ -76,30 +65,30 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $this->em->clear();
 
 
-        $this->assertTrue($this->container->get(EntityCreateCallback::class)->testCreateAccess);
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
+        $this->assertTrue(self::$container->get(EntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
         $this->assertFalse(
-            $this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
+            self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
         );
 
         $this->reset();
         $test = $this->em->getRepository(self::ENTITY)->findOneByTitle('chose');
         $test->setTitle('chose2');
         $this->em->flush();
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAccess);
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAfterAccess);
-        $this->assertTrue($this->container->get(EntityUpdateCallback::class)->testUpdateAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertTrue(self::$container->get(EntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
         $this->assertFalse(
-            $this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
+            self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
         );
 
         $this->reset();
@@ -107,15 +96,15 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAccess);
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
-        $this->assertTrue($this->container->get(EntityDeleteCallback::class)->testDeleteAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertTrue(self::$container->get(EntityDeleteCallback::class)->testDeleteAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
         $this->assertFalse(
-            $this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
+            self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
         );
         $this->reset();
     }
@@ -130,30 +119,30 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertTrue($this->container->get(EntityCreateCallback::class)->testCreateAccess);
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
+        $this->assertTrue(self::$container->get(EntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
         $this->assertFalse(
-            $this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
+            self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
         );
 
         $this->reset();
         $test = $this->em->getRepository(self::ENTITY)->findOneByTitle('chose');
         $this->em->flush();
 
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAccess);
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
         $this->assertFalse(
-            $this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
+            self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
         );
         $this->reset();
     }
@@ -172,18 +161,18 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertTrue($this->container->get(EntityCreateCallback::class)->testCreateAccess);
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
+        $this->assertTrue(self::$container->get(EntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
         $this->assertFalse(
-            $this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
+            self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
         );
-        $this->assertFalse($this->container->get(SubEntityCreateCallback::class)->testCreateAccess);
-        $this->assertTrue($this->container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(SubEntityCreateCallback::class)->testCreateAccess);
+        $this->assertTrue(self::$container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
 
         $this->reset();
 
@@ -198,18 +187,18 @@ class EntityModificationListenerTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAccess);
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAfterAccess);
-        $this->assertTrue($this->container->get(EntityUpdateCallback::class)->testUpdateAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
-        $this->assertTrue($this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertTrue(self::$container->get(EntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
+        $this->assertTrue(self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
         $this->assertFalse(
-            $this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
+            self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
         );
-        $this->assertFalse($this->container->get(SubEntityCreateCallback::class)->testCreateAccess);
-        $this->assertTrue($this->container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(SubEntityCreateCallback::class)->testCreateAccess);
+        $this->assertTrue(self::$container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
 
         $this->reset();
     }
@@ -234,18 +223,18 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertTrue($this->container->get(EntityCreateCallback::class)->testCreateAccess);
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
+        $this->assertTrue(self::$container->get(EntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
         $this->assertFalse(
-            $this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
+            self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
         );
-        $this->assertFalse($this->container->get(SubEntityCreateCallback::class)->testCreateAccess);
-        $this->assertTrue($this->container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(SubEntityCreateCallback::class)->testCreateAccess);
+        $this->assertTrue(self::$container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
 
 
         $this->reset();
@@ -257,15 +246,15 @@ class EntityModificationListenerTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAccess);
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAfterAccess);
-        $this->assertTrue($this->container->get(EntityUpdateCallback::class)->testUpdateAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
-        $this->assertTrue($this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertTrue(self::$container->get(EntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
+        $this->assertTrue(self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
         $this->assertFalse(
-            $this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
+            self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
         );
         $this->reset();
     }
@@ -278,18 +267,18 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $this->em->persist($subEntity);
         $this->em->flush();
 
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAccess);
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
         $this->assertFalse(
-            $this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
+            self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
         );
-        $this->assertFalse($this->container->get(SubEntityCreateCallback::class)->testCreateAccess);
-        $this->assertTrue($this->container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(SubEntityCreateCallback::class)->testCreateAccess);
+        $this->assertTrue(self::$container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
 
         $this->reset();
         $id = $subEntity->getId();
@@ -299,10 +288,10 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $test->setField('treter');
         $this->em->flush();
 
-        $this->assertFalse($this->container->get(SubEntityCreateCallback::class)->testCreateAccess);
-        $this->assertFalse($this->container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
-        $this->assertFalse($this->container->get(SubEntityUpdateCallback::class)->testUpdateAccess);
-        $this->assertTrue($this->container->get(SubEntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertFalse(self::$container->get(SubEntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse(self::$container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(SubEntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertTrue(self::$container->get(SubEntityUpdateCallback::class)->testUpdateAfterAccess);
     }
 
     public function testDeleteSubEntity()
@@ -335,29 +324,29 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $this->em->remove($test);
         $this->em->flush();
 
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAccess);
-        $this->assertFalse($this->container->get(EntityCreateCallback::class)->testCreateAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAccess);
-        $this->assertFalse($this->container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAccess);
-        $this->assertFalse($this->container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
-        $this->assertFalse($this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse(self::$container->get(EntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateCallback::class)->testUpdateAfterAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAccess);
+        $this->assertFalse(self::$container->get(EntityDeleteCallback::class)->testDeleteAfterAccess);
+        $this->assertFalse(self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAccess);
         $this->assertFalse(
-            $this->container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
+            self::$container->get(EntityUpdateSubEntitiesCallback::class)->testUpdateSubEntitiesAfterAccess
         );
-        $this->assertFalse($this->container->get(SubEntityCreateCallback::class)->testCreateAccess);
-        $this->assertFalse($this->container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
+        $this->assertFalse(self::$container->get(SubEntityCreateCallback::class)->testCreateAccess);
+        $this->assertFalse(self::$container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
 
 
     }
 
     private function reset(): void
     {
-        $this->container->get(EntityCreateCallback::class)->reset();
-        $this->container->get(EntityUpdateCallback::class)->reset();
-        $this->container->get(EntityDeleteCallback::class)->reset();
-        $this->container->get(EntityUpdateSubEntitiesCallback::class)->reset();
-        $this->container->get(SubEntityCreateCallback::class)->reset();
-        $this->container->get(SubEntityUpdateCallback::class)->reset();
+        self::$container->get(EntityCreateCallback::class)->reset();
+        self::$container->get(EntityUpdateCallback::class)->reset();
+        self::$container->get(EntityDeleteCallback::class)->reset();
+        self::$container->get(EntityUpdateSubEntitiesCallback::class)->reset();
+        self::$container->get(SubEntityCreateCallback::class)->reset();
+        self::$container->get(SubEntityUpdateCallback::class)->reset();
     }
 }
