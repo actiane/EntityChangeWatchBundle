@@ -314,9 +314,6 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $this->em->flush();
 
         $this->expectException(ServiceNotFoundException::class);
-        $this->expectExceptionMessage(
-            'Service "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\NotTaggedServiceCallback" not found: the container inside "Actiane\EntityChangeWatchBundle\Generator\CallableGenerator" is a smaller service locator that only knows about the "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback", "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback", "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback", "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback", "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityCreateCallback" and "Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityUpdateCallback" services.'
-        );
 
         $this->em->remove($subEntity);
         $this->em->flush();
