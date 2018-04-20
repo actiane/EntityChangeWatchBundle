@@ -14,12 +14,20 @@ class EntityDeleteCallback
 {
     public $testDeleteAccess = false;
 
-    public function testDelete(Entity $entity, $changedProperties)
+    public $testDeleteAfterAccess = false;
+
+    public function testDelete(Entity $entity, $changedProperties, EntityManagerInterface $entityManager)
     {
         $this->testDeleteAccess = true;
     }
 
+    public function testDeleteAfter(Entity $entity, $changedProperties, EntityManagerInterface $entityManager)
+    {
+        $this->testDeleteAfterAccess = true;
+    }
+
     public function reset(){
         $this->testDeleteAccess = false;
+        $this->testDeleteAfterAccess = false;
     }
 }

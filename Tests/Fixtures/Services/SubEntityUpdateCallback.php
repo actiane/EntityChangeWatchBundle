@@ -14,12 +14,20 @@ class SubEntityUpdateCallback
 {
     public $testUpdateAccess = false;
 
-    public function testUpdate(SubEntity $entity, $changedProperties)
+    public $testUpdateAfterAccess = false;
+
+    public function testUpdate(SubEntity $entity, $changedProperties, EntityManagerInterface $entityManager)
     {
         $this->testUpdateAccess = true;
     }
 
+    public function testUpdateAfter(SubEntity $entity, $changedProperties, EntityManagerInterface $entityManager)
+    {
+        $this->testUpdateAfterAccess = true;
+    }
+
     public function reset(){
         $this->testUpdateAccess = false;
+        $this->testUpdateAfterAccess = false;
     }
 }

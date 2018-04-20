@@ -16,12 +16,18 @@ class EntityUpdateCallback
 
     public $testUpdateAfterAccess = false;
 
-    public function testUpdate(Entity $entity, $changedProperties)
+    public function testUpdate(Entity $entity, $changedProperties, EntityManagerInterface $entityManager)
     {
         $this->testUpdateAccess = true;
     }
 
+    public function testUpdateAfter(Entity $entity, $changedProperties, EntityManagerInterface $entityManager)
+    {
+        $this->testUpdateAfterAccess = true;
+    }
+
     public function reset(){
         $this->testUpdateAccess = false;
+        $this->testUpdateAfterAccess = false;
     }
 }

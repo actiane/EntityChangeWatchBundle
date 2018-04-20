@@ -42,6 +42,17 @@ class EntityModificationListener
         $this->callable = $this->lifecycleCallableGenerator->generateLifeCycleCallable(
             $entityManager->getUnitOfWork()
         );
+
+        foreach ($this->callable as $key => $callableItem) {
+            if ($callableItem['flush'] !== false) {
+                continue;
+            }
+            unset($this->callable[$key]);
+            call_user_func_array(
+                $callableItem['callable'],
+                $callableItem['parameters'] + ['entityManager' => $entityManager]
+            );
+        }
     }
 
     /**

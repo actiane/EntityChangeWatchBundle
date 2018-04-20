@@ -19,30 +19,30 @@ class ConfigurationTest extends KernelTestCase
 classes:
     Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity:
         create:
-            - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback', method: 'testCreate'}
+            - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback', method: 'testCreate', flush: false}
         update:
             all:
-                - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback', method: 'testUpdate'}
+                - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback', method: 'testUpdate', flush: false}
             properties:
                 subEntities:
-                    - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback', method: 'testUpdateSubEntities'}
+                    - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback', method: 'testUpdateSubEntities', flush: false}
         delete:
-            - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback', method: 'testDelete'}
+            - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback', method: 'testDelete', flush: false}
 YAML;
 
     private $classDontExistYaml = <<<YAML
 classes:
     i\dont\exist:
         create:
-            - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback', method: 'testCreate'}
+            - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback', method: 'testCreate', flush: false}
         update:
             all:
-                - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback', method: 'testUpdate'}
+                - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback', method: 'testUpdate', flush: false}
             properties:
                 subEntities:
-                    - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback', method: 'testUpdateSubEntities'}
+                    - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback', method: 'testUpdateSubEntities', flush: false}
         delete:
-            - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback', method: 'testDelete'}
+            - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback', method: 'testDelete', flush: false}
 YAML;
 
 
@@ -97,6 +97,7 @@ YAML;
                                 [
                                     'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback',
                                     'method' => 'testCreate',
+                                    'flush' => false,
                                 ],
 
                             ],
@@ -106,6 +107,7 @@ YAML;
                                     [
                                         'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback',
                                         'method' => 'testUpdate',
+                                        'flush' => false,
                                     ],
 
                                 ],
@@ -115,6 +117,7 @@ YAML;
                                         [
                                             'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback',
                                             'method' => 'testUpdateSubEntities',
+                                            'flush' => false,
                                         ],
 
                                     ],
@@ -127,6 +130,7 @@ YAML;
                                 [
                                     'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback',
                                     'method' => 'testDelete',
+                                    'flush' => false,
                                 ],
 
                             ],

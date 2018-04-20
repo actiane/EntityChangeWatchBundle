@@ -14,12 +14,20 @@ class SubEntityCreateCallback
 {
     public $testCreateAccess = false;
 
-    public function testCreate(SubEntity $entity, $changedProperties)
+    public $testCreateAfterAccess = false;
+
+    public function testCreate(SubEntity $entity, $changedProperties, EntityManagerInterface $entityManager)
     {
         $this->testCreateAccess = true;
     }
 
+    public function testCreateAfter(SubEntity $entity, $changedProperties, EntityManagerInterface $entityManager)
+    {
+        $this->testCreateAfterAccess = true;
+    }
+
     public function reset(){
         $this->testCreateAccess = false;
+        $this->testCreateAfterAccess = false;
     }
 }
