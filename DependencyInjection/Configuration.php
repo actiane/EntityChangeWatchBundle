@@ -5,12 +5,6 @@ namespace Actiane\EntityChangeWatchBundle\DependencyInjection;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-/**
- * This is the class that validates and merges configuration from your app/config files
- *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html#cookbook-bundles-extension-config-class}
- * @codeCoverageIgnore
- */
 class Configuration implements ConfigurationInterface
 {
     /**
@@ -23,16 +17,18 @@ class Configuration implements ConfigurationInterface
 
 
         $rootNode->children()
-                    ->arrayNode('classes')->validate()->ifTrue(function($classes){
+                    ->arrayNode('classes')->validate()->ifTrue(
+                        function ($classes) {
 
-                        foreach($classes as $key=>$value)
-                        {
-                            if (!class_exists($key))
-                                return $key;
+                            foreach ($classes as $key => $value) {
+                                if (!class_exists($key)) {
+                                    return $key;
+                                }
+                            }
+
+                            return false;
                         }
-                        return false;
-
-            })->thenInvalid('Class not found')->end()
+                    )->thenInvalid('Class not found')->end()
                         ->prototype('array')
                             ->children()
                                 ->arrayNode('update')

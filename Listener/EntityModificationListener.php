@@ -2,7 +2,6 @@
 
 namespace Actiane\EntityChangeWatchBundle\Listener;
 
-
 use Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
