@@ -19,14 +19,14 @@ class Configuration implements ConfigurationInterface
         $rootNode->children()
                     ->arrayNode('classes')->validate()->ifTrue(function ($classes) {
 
-                    foreach ($classes as $key => $value) {
-                        if (!class_exists($key)) {
-                            return $key;
+                        foreach ($classes as $key => $value) {
+                            if (!class_exists($key)) {
+                                return $key;
+                            }
                         }
-                    }
 
-                    return false;
-                })->thenInvalid('Class not found')->end()
+                        return false;
+                    })->thenInvalid('Class not found')->end()
                         ->prototype('array')
                             ->children()
                                 ->arrayNode('update')

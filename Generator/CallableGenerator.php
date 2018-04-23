@@ -34,7 +34,7 @@ class CallableGenerator
      *
      * @return array
      */
-    public function generateCallable(array $arrayCallable = [], $entity, $changedProperties = null)
+    public function generateCallable(array $arrayCallable, $entity, $changedProperties = null)
     {
         $callable = [];
 
@@ -58,7 +58,7 @@ class CallableGenerator
      *
      * @return string
      */
-    private function generateCallableSignature(array $arrayCallable = [], $entity)
+    private function generateCallableSignature(array $arrayCallable, $entity)
     {
         return $arrayCallable['name'].':'.$arrayCallable['method'].':'.spl_object_hash($entity);
     }

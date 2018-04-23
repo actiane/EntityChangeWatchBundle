@@ -14,5 +14,4 @@ class EntityChangeWatchBundle extends Bundle
 
         $container->addCompilerPass(new CallbackServiceCompilerPass());
     }
-
 }
