@@ -9,11 +9,13 @@ use Actiane\EntityChangeWatchBundle\Listener\EntityModificationListener;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\NotWatchedEntity;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\SubEntity;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\SubEntityOneToOne;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityCreateCallback;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityOneToOneUpdateCallback;
 use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityUpdateCallback;
 use Doctrine\Common\EventManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -31,6 +33,8 @@ class EntityModificationListenerTest extends BaseTestCaseORM
 
     const SUB_ENTITY = SubEntity::class;
 
+    const SUB_ENTITY_ONE_TO_ONE = SubEntityOneToOne::class;
+
     const NOT_WATCHED_ENTITY = NotWatchedEntity::class;
 
     protected function getUsedEntityFixtures()
@@ -38,6 +42,7 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         return [
             self::ENTITY,
             self::SUB_ENTITY,
+            self::SUB_ENTITY_ONE_TO_ONE,
             self::NOT_WATCHED_ENTITY
         ];
     }
@@ -292,6 +297,35 @@ class EntityModificationListenerTest extends BaseTestCaseORM
         $this->assertFalse(self::$container->get(SubEntityCreateCallback::class)->testCreateAfterAccess);
         $this->assertFalse(self::$container->get(SubEntityUpdateCallback::class)->testUpdateAccess);
         $this->assertTrue(self::$container->get(SubEntityUpdateCallback::class)->testUpdateAfterAccess);
+    }
+
+    /**
+     * Got an issue with OneToOne relationship.
+     * When we retrieve subentity from parent - we got an Proxy object
+     */
+    public function testUpdateSubEntityOneToOne()
+    {
+        $entity = (new Entity())->setTitle('title');
+        $subEntity = new SubEntityOneToOne();
+        $subEntity->setField('blabla');
+
+        $entity->setSubEntitiesOneToOne($subEntity);
+
+        $this->em->persist($subEntity);
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $id = $entity->getId();
+
+        /** @var Entity $parentEntity */
+        $parentEntity = $this->em->getRepository(self::ENTITY)->find($id);
+        $entityToUpdate = $parentEntity->getSubEntitiesOneToOne();
+        $entityToUpdate->setField('HA');
+
+        $this->em->flush();
+
+        $this->assertTrue(self::$container->get(SubEntityOneToOneUpdateCallback::class)->testUpdateAccess);
     }
 
     public function testDeleteSubEntity()

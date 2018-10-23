@@ -3,6 +3,7 @@
 
 namespace Actiane\EntityChangeWatchBundle\Generator;
 
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\UnitOfWork;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
@@ -85,7 +86,8 @@ class LifecycleCallableGenerator
     private function generateCreateDeleteCallables(&$callable, &$lifeCycleEntities, $entity, $state): void
     {
         $lifeCycleEntities[spl_object_hash($entity)] = $entity;
-        $className = get_class($entity);
+        // we might have a doctrine proxyfied object
+        $className = ClassUtils::getClass($entity);
 
         if (!array_key_exists($className, $this->entityWatch)) {
             return;
@@ -103,7 +105,8 @@ class LifecycleCallableGenerator
      */
     private function generateUpdateCallables(&$callable, $changedProperties, $entity): void
     {
-        $className = get_class($entity);
+        // we might have a doctrine proxyfied object
+        $className = ClassUtils::getClass($entity);
 
         if (!array_key_exists($className, $this->entityWatch) ||
             !array_key_exists('update', $this->entityWatch[$className])) {
