@@ -47,7 +47,7 @@ abstract class BaseTestCaseORM extends KernelTestCase
     {
         $conn = [
             'driver' => 'pdo_sqlite',
-            'memory' => true,
+            'memory' => false,
         ];
         $config = null === $config ? $this->getMockAnnotatedConfig() : $config;
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());

@@ -19,3 +19,8 @@ entity_change_watch:
                     - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityUpdateCallback', method: 'testUpdateAfter', flush: true}
             delete:
                 - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\NotTaggedServiceCallback', method: 'testDelete', flush: false}
+
+        Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\SubEntityOneToOne:
+            update:
+                all:
+                    - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\SubEntityOneToOneUpdateCallback', method: 'testUpdate', flush: false}

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -8,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class Entity
+ *
  * @package Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity
  * @ORM\Entity
  */
@@ -31,6 +31,12 @@ class Entity
      * @ORM\OneToMany(targetEntity="SubEntity", mappedBy="entity")
      */
     private $subEntities;
+
+    /**
+     * @var SubEntityOneToOne
+     * @ORM\OneToOne(targetEntity="SubEntityOneToOne")
+     */
+    private $subEntitiesOneToOne;
 
     /**
      * Entity constructor.
@@ -121,6 +127,26 @@ class Entity
     public function setSubEntities($subEntities)
     {
         $this->subEntities = $subEntities;
+
+        return $this;
+    }
+
+    /**
+     * @return SubEntityOneToOne
+     */
+    public function getSubEntitiesOneToOne()
+    {
+        return $this->subEntitiesOneToOne;
+    }
+
+    /**
+     * @param SubEntityOneToOne $subEntitiesOneToOne
+     *
+     * @return Entity
+     */
+    public function setSubEntitiesOneToOne($subEntitiesOneToOne)
+    {
+        $this->subEntitiesOneToOne = $subEntitiesOneToOne;
 
         return $this;
     }
