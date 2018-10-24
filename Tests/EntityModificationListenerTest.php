@@ -336,7 +336,7 @@ class EntityModificationListenerTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertTrue(self::$container->get(SubEntityOneToOneUpdateCallback::class)->testUpdateAccess);
+        $this->assertTrue($this->container->get(SubEntityOneToOneUpdateCallback::class)->testUpdateAccess);
     }
 
     public function testDeleteSubEntity()
