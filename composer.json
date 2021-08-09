@@ -15,15 +15,16 @@
   },
   "require": {
     "php": "^7.1",
-    "symfony/framework-bundle": "^4.1",
-    "doctrine/orm": "~2.4,>=2.4.5",
-    "doctrine/doctrine-bundle": "~1.4",
-    "symfony/property-access": "~4.1"
+    "symfony/framework-bundle": "^5.3.4",
+    "doctrine/orm": "^2.7.0",
+    "doctrine/doctrine-bundle": "~2.4.2",
+    "symfony/property-access": "^v5.3.4"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.1",
-    "symfony/yaml": "~4.1",
-    "php-coveralls/php-coveralls": "^2.0"
+    "phpunit/phpunit": "^9.5.8",
+    "symfony/yaml": "^5.3.4",
+    "php-coveralls/php-coveralls": "^2.4.3",
+    "doctrine/annotations": "1.14.x-dev"
   },
   "minimum-stability": "dev"
 }

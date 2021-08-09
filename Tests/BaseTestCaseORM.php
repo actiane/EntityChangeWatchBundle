@@ -30,7 +30,7 @@ abstract class BaseTestCaseORM extends KernelTestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
     }
 
@@ -39,7 +39,8 @@ abstract class BaseTestCaseORM extends KernelTestCase
      * annotation mapping driver and pdo_sqlite
      * database in memory
      *
-     * @param EventManager $evm
+     * @param EventManager|null  $evm
+     * @param Configuration|null $config
      *
      * @return EntityManager
      */
@@ -52,7 +53,7 @@ abstract class BaseTestCaseORM extends KernelTestCase
         $config = null === $config ? $this->getMockAnnotatedConfig() : $config;
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
         $schema = array_map(
-            function ($class) use ($em) {
+            static function ($class) use ($em) {
                 return $em->getClassMetadata($class);
             },
             (array)$this->getUsedEntityFixtures()
@@ -69,8 +70,8 @@ abstract class BaseTestCaseORM extends KernelTestCase
      * annotation mapping driver and custom
      * connection
      *
-     * @param array        $conn
-     * @param EventManager $evm
+     * @param array             $conn
+     * @param EventManager|null $evm
      *
      * @return EntityManager
      */
@@ -79,7 +80,7 @@ abstract class BaseTestCaseORM extends KernelTestCase
         $config = $this->getMockAnnotatedConfig();
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
         $schema = array_map(
-            function ($class) use ($em) {
+            static function ($class) use ($em) {
                 return $em->getClassMetadata($class);
             },
             (array)$this->getUsedEntityFixtures()
@@ -95,7 +96,7 @@ abstract class BaseTestCaseORM extends KernelTestCase
      * EntityManager mock object with
      * annotation mapping driver
      *
-     * @param EventManager $evm
+     * @param EventManager|null $evm
      *
      * @return EntityManager
      */

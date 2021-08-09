@@ -7,6 +7,10 @@ use Actiane\EntityChangeWatchBundle\DependencyInjection\Configuration;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Yaml\Yaml;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback;
 
 /**
  * Class ConfigurationTest
@@ -95,7 +99,7 @@ YAML;
                         'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity' => [
                             'create' => [
                                 [
-                                    'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback',
+                                    'name' => EntityCreateCallback::class,
                                     'method' => 'testCreate',
                                     'flush' => false,
                                 ],
@@ -105,7 +109,7 @@ YAML;
                             'update' => [
                                 'all' => [
                                     [
-                                        'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback',
+                                        'name' => EntityUpdateCallback::class,
                                         'method' => 'testUpdate',
                                         'flush' => false,
                                     ],
@@ -115,7 +119,7 @@ YAML;
                                 'properties' => [
                                     'subEntities' => [
                                         [
-                                            'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback',
+                                            'name' => EntityUpdateSubEntitiesCallback::class,
                                             'method' => 'testUpdateSubEntities',
                                             'flush' => false,
                                         ],
@@ -128,7 +132,7 @@ YAML;
 
                             'delete' => [
                                 [
-                                    'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback',
+                                    'name' => EntityDeleteCallback::class,
                                     'method' => 'testDelete',
                                     'flush' => false,
                                 ],

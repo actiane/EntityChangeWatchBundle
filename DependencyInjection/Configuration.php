@@ -12,9 +12,9 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('entity_change_watch');
+        $treeBuilder = new TreeBuilder('entity_change_watch');
 
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode->children()
                     ->arrayNode('classes')->validate()->ifTrue(function ($classes) {

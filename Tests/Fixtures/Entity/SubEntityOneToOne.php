@@ -1,10 +1,4 @@
 <?php declare(strict_types = 1);
-/**
- * Created by PhpStorm.
- * User: nicolas
- * Date: 23/10/18
- * Time: 16:39
- */
 
 namespace Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity;
 
