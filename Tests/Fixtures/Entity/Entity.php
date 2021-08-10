@@ -18,7 +18,7 @@ class Entity
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private ?int $id;
+    private ?int $id = null;
     /**
      * @ORM\Column(type="string")
      */
@@ -35,6 +35,7 @@ class Entity
     private ?SubEntityOneToOne $subEntitiesOneToOne = null;
 
     /**
+     *
      */
     public function __construct()
     {

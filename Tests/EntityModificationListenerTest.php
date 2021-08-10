@@ -42,6 +42,7 @@ class EntityModificationListenerTest extends BaseTestCaseORM
     }
 
     /**
+     *
      */
     protected function setUp(): void
     {
@@ -395,6 +396,7 @@ class EntityModificationListenerTest extends BaseTestCaseORM
     }
 
     /**
+     *
      */
     private function reset(): void
     {

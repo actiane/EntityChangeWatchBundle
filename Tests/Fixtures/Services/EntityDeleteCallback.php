@@ -34,6 +34,7 @@ class EntityDeleteCallback
     }
 
     /**
+     *
      */
     public function reset(): void
     {

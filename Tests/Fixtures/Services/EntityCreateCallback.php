@@ -34,6 +34,7 @@ class EntityCreateCallback
     }
 
     /**
+     *
      */
     public function reset(): void
     {
