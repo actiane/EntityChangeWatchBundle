@@ -1,14 +1,14 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class Entity
  *
- * @package Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity
  * @ORM\Entity
  */
 class Entity
@@ -18,28 +18,23 @@ class Entity
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
-
+    private ?int $id;
     /**
-     * @var string
      * @ORM\Column(type="string")
      */
-    private $title;
-
+    private ?string $title = null;
     /**
-     * @var SubEntity[]|ArrayCollection
+     * @var Collection|SubEntity[]
+     *
      * @ORM\OneToMany(targetEntity="SubEntity", mappedBy="entity")
      */
-    private $subEntities;
-
+    private Collection $subEntities;
     /**
-     * @var SubEntityOneToOne
      * @ORM\OneToOne(targetEntity="SubEntityOneToOne")
      */
-    private $subEntitiesOneToOne;
+    private ?SubEntityOneToOne $subEntitiesOneToOne = null;
 
     /**
-     * Entity constructor.
      */
     public function __construct()
     {
@@ -47,19 +42,19 @@ class Entity
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * @param int $id
      *
      * @return Entity
      */
-    public function setId($id)
+    public function setId(int $id): Entity
     {
         $this->id = $id;
 
@@ -67,9 +62,9 @@ class Entity
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -99,7 +94,7 @@ class Entity
      *
      * @return Entity
      */
-    public function addSubEntity($subEntity)
+    public function addSubEntity(SubEntity $subEntity): Entity
     {
         $this->subEntities->add($subEntity);
         $subEntity->setEntity($this);
@@ -112,7 +107,7 @@ class Entity
      *
      * @return Entity
      */
-    public function removeSubEntity($subEntity)
+    public function removeSubEntity(SubEntity $subEntity): Entity
     {
         $this->subEntities->removeElement($subEntity);
 
@@ -132,9 +127,9 @@ class Entity
     }
 
     /**
-     * @return SubEntityOneToOne
+     * @return SubEntityOneToOne|null
      */
-    public function getSubEntitiesOneToOne()
+    public function getSubEntitiesOneToOne(): ?SubEntityOneToOne
     {
         return $this->subEntitiesOneToOne;
     }
@@ -144,7 +139,7 @@ class Entity
      *
      * @return Entity
      */
-    public function setSubEntitiesOneToOne($subEntitiesOneToOne)
+    public function setSubEntitiesOneToOne(SubEntityOneToOne $subEntitiesOneToOne): Entity
     {
         $this->subEntitiesOneToOne = $subEntitiesOneToOne;
 

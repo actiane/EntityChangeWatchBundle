@@ -1,5 +1,4 @@
-<?php
-
+<?php declare(strict_types = 1);
 
 namespace Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services;
 
@@ -8,25 +7,36 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class SubEntityCreateCallback
- * @package Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services
  */
 class SubEntityCreateCallback
 {
-    public $testCreateAccess = false;
+    public bool $testCreateAccess = false;
+    public bool $testCreateAfterAccess = false;
 
-    public $testCreateAfterAccess = false;
-
+    /**
+     * @param SubEntity              $entity
+     * @param                        $changedProperties
+     * @param EntityManagerInterface $entityManager
+     */
     public function testCreate(SubEntity $entity, $changedProperties, EntityManagerInterface $entityManager)
     {
         $this->testCreateAccess = true;
     }
 
+    /**
+     * @param SubEntity              $entity
+     * @param                        $changedProperties
+     * @param EntityManagerInterface $entityManager
+     */
     public function testCreateAfter(SubEntity $entity, $changedProperties, EntityManagerInterface $entityManager)
     {
         $this->testCreateAfterAccess = true;
     }
 
-    public function reset(){
+    /**
+     */
+    public function reset(): void
+    {
         $this->testCreateAccess = false;
         $this->testCreateAfterAccess = false;
     }

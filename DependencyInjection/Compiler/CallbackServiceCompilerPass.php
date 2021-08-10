@@ -1,5 +1,4 @@
-<?php
-
+<?php declare(strict_types = 1);
 
 namespace Actiane\EntityChangeWatchBundle\DependencyInjection\Compiler;
 
@@ -9,10 +8,12 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Class CallbackServiceCompilerPass
- * @package Actiane\EntityChangeWatchBundle\DependencyInjection\Compiler
  */
 class CallbackServiceCompilerPass implements CompilerPassInterface
 {
+    /**
+     * @param ContainerBuilder $container
+     */
     public function process(ContainerBuilder $container)
     {
         $definition = $container->findDefinition('actiane.entitywatch.callback_locator');

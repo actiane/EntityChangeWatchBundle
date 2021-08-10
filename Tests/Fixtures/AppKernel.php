@@ -1,10 +1,10 @@
-<?php
-
+<?php declare(strict_types=1);
 
 namespace Actiane\EntityChangeWatchBundle\Tests\Fixtures;
 
 use Actiane\EntityChangeWatchBundle\EntityChangeWatchBundle;
 use Actiane\EntityChangeWatchBundle\Tests\TestContainerPass;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -12,28 +12,34 @@ use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Class AppKernel
- * @package Actiane\EntityChangeWatchBundle\Tests\App
  */
 class AppKernel extends Kernel
 {
-    public function registerBundles()
+    /**
+     * @return array
+     */
+    public function registerBundles(): array
     {
         return [
-            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new FrameworkBundle(),
             new EntityChangeWatchBundle(),
         ];
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    /**
+     * @param LoaderInterface $loader
+     */
+    public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load(__DIR__.'/config/config.yaml');
     }
 
-    protected function build(ContainerBuilder $container)
+    /**
+     * @param ContainerBuilder $container
+     */
+    protected function build(ContainerBuilder $container): void
     {
         parent::build($container);
         $container->addCompilerPass(new TestContainerPass(), PassConfig::TYPE_OPTIMIZE);
     }
-
-
 }

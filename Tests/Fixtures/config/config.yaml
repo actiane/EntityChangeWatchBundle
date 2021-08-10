@@ -26,3 +26,4 @@ services:
 
 framework:
     secret: 'secret'
+    test: true
