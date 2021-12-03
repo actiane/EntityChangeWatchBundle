@@ -1,5 +1,4 @@
-<?php
-
+<?php declare(strict_types = 1);
 
 namespace Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity;
 
@@ -7,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class NotWatchedEntity
- * @package Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity
+ *
  * @ORM\Entity
  */
 class NotWatchedEntity
@@ -17,28 +16,26 @@ class NotWatchedEntity
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
-
+    private ?int $id = null;
     /**
-     * @var string
      * @ORM\Column(type="string")
      */
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * @param int $id
      *
      * @return NotWatchedEntity
      */
-    public function setId($id)
+    public function setId(int $id): NotWatchedEntity
     {
         $this->id = $id;
 
@@ -46,9 +43,9 @@ class NotWatchedEntity
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }

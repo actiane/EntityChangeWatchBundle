@@ -1,5 +1,4 @@
-<?php
-
+<?php declare(strict_types = 1);
 
 namespace Actiane\EntityChangeWatchBundle\Generator;
 
@@ -9,30 +8,15 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * Class LifecycleCallableGenerator
- * @package Actiane\EntityChangeWatchBundle\Generator
  */
 class LifecycleCallableGenerator
 {
-    /**
-     * @var array
-     */
-    private $entityWatch;
+    private array $entityWatch;
+    private PropertyAccessor $propertyAccessor;
+    private CallableGenerator $callableGenerator;
 
-    /**
-     * @var PropertyAccessor
-     */
-    private $propertyAccessor;
-
-    /**
-     * @var CallableGenerator
-     */
-    private $callableGenerator;
-
-    public function __construct(
-        $entityWatch,
-        CallableGenerator $callableGenerator,
-        PropertyAccessor $propertyAccessor
-    ) {
+    public function __construct(array $entityWatch, CallableGenerator $callableGenerator, PropertyAccessor $propertyAccessor)
+    {
         $this->entityWatch = $entityWatch;
         $this->propertyAccessor = $propertyAccessor;
         $this->callableGenerator = $callableGenerator;
@@ -77,7 +61,6 @@ class LifecycleCallableGenerator
         return $callable;
     }
 
-
     /**
      * @param $callable
      * @param $entity
@@ -108,8 +91,9 @@ class LifecycleCallableGenerator
         // we might have a doctrine proxyfied object
         $className = ClassUtils::getClass($entity);
 
-        if (!array_key_exists($className, $this->entityWatch) ||
-            !array_key_exists('update', $this->entityWatch[$className])) {
+        if (!array_key_exists($className, $this->entityWatch)
+            || !array_key_exists('update', $this->entityWatch[$className])
+        ) {
             return;
         }
 
@@ -129,6 +113,5 @@ class LifecycleCallableGenerator
                 }
             }
         }
-
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 
 namespace Actiane\EntityChangeWatchBundle\Tests;
@@ -10,6 +10,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Doctrine\DBAL\Driver;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Connection;
 
 /**
  * Base test case contains common mock objects
@@ -22,28 +25,19 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 abstract class BaseTestCaseORM extends KernelTestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
-    {
-    }
+    protected EntityManager $em;
 
     /**
      * EntityManager mock object together with
      * annotation mapping driver and pdo_sqlite
      * database in memory
      *
-     * @param EventManager $evm
+     * @param EventManager|null  $evm
+     * @param Configuration|null $config
      *
      * @return EntityManager
      */
-    protected function getMockSqliteEntityManager(EventManager $evm = null, Configuration $config = null)
+    protected function getMockSqliteEntityManager(EventManager $evm = null, Configuration $config = null): EntityManager
     {
         $conn = [
             'driver' => 'pdo_sqlite',
@@ -52,7 +46,7 @@ abstract class BaseTestCaseORM extends KernelTestCase
         $config = null === $config ? $this->getMockAnnotatedConfig() : $config;
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
         $schema = array_map(
-            function ($class) use ($em) {
+            static function ($class) use ($em) {
                 return $em->getClassMetadata($class);
             },
             (array)$this->getUsedEntityFixtures()
@@ -69,17 +63,17 @@ abstract class BaseTestCaseORM extends KernelTestCase
      * annotation mapping driver and custom
      * connection
      *
-     * @param array        $conn
-     * @param EventManager $evm
+     * @param array             $conn
+     * @param EventManager|null $evm
      *
      * @return EntityManager
      */
-    protected function getMockCustomEntityManager(array $conn, EventManager $evm = null)
+    protected function getMockCustomEntityManager(array $conn, EventManager $evm = null): EntityManager
     {
         $config = $this->getMockAnnotatedConfig();
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
         $schema = array_map(
-            function ($class) use ($em) {
+            static function ($class) use ($em) {
                 return $em->getClassMetadata($class);
             },
             (array)$this->getUsedEntityFixtures()
@@ -95,18 +89,18 @@ abstract class BaseTestCaseORM extends KernelTestCase
      * EntityManager mock object with
      * annotation mapping driver
      *
-     * @param EventManager $evm
+     * @param EventManager|null $evm
      *
      * @return EntityManager
      */
-    protected function getMockMappedEntityManager(EventManager $evm = null)
+    protected function getMockMappedEntityManager(EventManager $evm = null): EntityManager
     {
-        $driver = $this->getMockBuilder('Doctrine\DBAL\Driver')->getMock();
+        $driver = $this->getMockBuilder(Driver::class)->getMock();
         $driver->expects($this->once())
                ->method('getDatabasePlatform')
-               ->will($this->returnValue($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock()))
+               ->will($this->returnValue($this->getMockBuilder(MySqlPlatform::class)->getMock()))
         ;
-        $conn = $this->getMockBuilder('Doctrine\DBAL\Connection')
+        $conn = $this->getMockBuilder(Connection::class)
                      ->setConstructorArgs([], $driver)
                      ->getMock()
         ;
@@ -123,9 +117,9 @@ abstract class BaseTestCaseORM extends KernelTestCase
     /**
      * Creates default mapping driver
      *
-     * @return \Doctrine\ORM\Mapping\Driver\Driver
+     * @return AnnotationDriver
      */
-    protected function getMetadataDriverImplementation()
+    protected function getMetadataDriverImplementation(): AnnotationDriver
     {
         return new AnnotationDriver($_ENV['annotation_reader']);
     }
@@ -135,14 +129,14 @@ abstract class BaseTestCaseORM extends KernelTestCase
      *
      * @return array
      */
-    abstract protected function getUsedEntityFixtures();
+    abstract protected function getUsedEntityFixtures(): array;
 
     /**
      * Build event manager
      *
      * @return EventManager
      */
-    private function getEventManager()
+    private function getEventManager(): EventManager
     {
         $evm = new EventManager();
         $evm->addEventListener(['preUpdate', 'prePersist', 'postPersist', 'preRemove', 'onFlush', 'postFlush'], new EntityModificationListener());
@@ -153,9 +147,9 @@ abstract class BaseTestCaseORM extends KernelTestCase
     /**
      * Get annotation mapping configuration
      *
-     * @return \Doctrine\ORM\Configuration
+     * @return Configuration
      */
-    protected function getMockAnnotatedConfig()
+    protected function getMockAnnotatedConfig(): Configuration
     {
         $config = new Configuration();
         $config->setProxyDir(__DIR__.'/../../temp');

@@ -1,5 +1,4 @@
-<?php
-
+<?php declare(strict_types = 1);
 
 namespace Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity;
 
@@ -7,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class SubEntity
- * @package Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity
+ *
  * @ORM\Entity
  */
 class SubEntity
@@ -17,35 +16,30 @@ class SubEntity
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
-
+    private ?int $id = null;
     /**
-     * @var string
-     *
      * @ORM\Column(type="string")
      */
-    private $field;
-
+    private ?string $field = null;
     /**
-     * @var Entity
      * @ORM\ManyToOne(targetEntity="Entity", inversedBy="subEntities")
      */
-    private $entity;
+    private ?Entity $entity = null;
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * @param int $id
      *
      * @return SubEntity
      */
-    public function setId($id)
+    public function setId(int $id): SubEntity
     {
         $this->id = $id;
 
@@ -53,9 +47,9 @@ class SubEntity
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getField(): string
+    public function getField(): ?string
     {
         return $this->field;
     }
@@ -73,9 +67,9 @@ class SubEntity
     }
 
     /**
-     * @return Entity
+     * @return Entity|null
      */
-    public function getEntity(): Entity
+    public function getEntity(): ?Entity
     {
         return $this->entity;
     }

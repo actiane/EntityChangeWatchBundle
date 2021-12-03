@@ -1,5 +1,4 @@
-<?php
-
+<?php declare(strict_types = 1);
 
 namespace Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services;
 
@@ -8,25 +7,37 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class SubEntityUpdateCallback
- * @package Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services
  */
 class SubEntityUpdateCallback
 {
-    public $testUpdateAccess = false;
+    public bool $testUpdateAccess = false;
+    public bool $testUpdateAfterAccess = false;
 
-    public $testUpdateAfterAccess = false;
-
+    /**
+     * @param SubEntity              $entity
+     * @param                        $changedProperties
+     * @param EntityManagerInterface $entityManager
+     */
     public function testUpdate(SubEntity $entity, $changedProperties, EntityManagerInterface $entityManager)
     {
         $this->testUpdateAccess = true;
     }
 
+    /**
+     * @param SubEntity              $entity
+     * @param                        $changedProperties
+     * @param EntityManagerInterface $entityManager
+     */
     public function testUpdateAfter(SubEntity $entity, $changedProperties, EntityManagerInterface $entityManager)
     {
         $this->testUpdateAfterAccess = true;
     }
 
-    public function reset(){
+    /**
+     *
+     */
+    public function reset(): void
+    {
         $this->testUpdateAccess = false;
         $this->testUpdateAfterAccess = false;
     }

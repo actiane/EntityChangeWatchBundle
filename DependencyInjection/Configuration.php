@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Actiane\EntityChangeWatchBundle\DependencyInjection;
 
@@ -10,11 +10,11 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritDoc}
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('entity_change_watch');
+        $treeBuilder = new TreeBuilder('entity_change_watch');
 
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode->children()
                     ->arrayNode('classes')->validate()->ifTrue(function ($classes) {

@@ -1,27 +1,22 @@
-<?php
-
+<?php declare(strict_types = 1);
 
 namespace Actiane\EntityChangeWatchBundle\Generator;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
  * Class CallableGenerator
- * @package Actiane\EntityChangeWatchBundle\Generator
  */
 class CallableGenerator
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $serviceContainer;
+    private ServiceLocator $serviceLocator;
 
     /**
-     * @param ContainerInterface $serviceContainer
+     * @param ServiceLocator $serviceContainer
      */
-    public function __construct($serviceContainer)
+    public function __construct(ServiceLocator $serviceContainer)
     {
-        $this->serviceContainer = $serviceContainer;
+        $this->serviceLocator = $serviceContainer;
     }
 
     /**
@@ -34,13 +29,13 @@ class CallableGenerator
      *
      * @return array
      */
-    public function generateCallable(array $arrayCallable = [], $entity, $changedProperties = null)
+    public function generateCallable(array $arrayCallable = [], $entity, $changedProperties = null): array
     {
         $callable = [];
 
         $callable[$this->generateCallableSignature($arrayCallable, $entity)] = [
             'callable' => [
-                $this->serviceContainer->get($arrayCallable['name']),
+                $this->serviceLocator->get($arrayCallable['name']),
                 $arrayCallable['method'],
             ],
             'parameters' => ['entity' => $entity, 'changedProperties' => $changedProperties],
@@ -58,7 +53,7 @@ class CallableGenerator
      *
      * @return string
      */
-    private function generateCallableSignature(array $arrayCallable = [], $entity)
+    private function generateCallableSignature(array $arrayCallable = [], $entity): string
     {
         return $arrayCallable['name'].':'.$arrayCallable['method'].':'.spl_object_hash($entity);
     }

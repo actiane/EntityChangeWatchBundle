@@ -1,8 +1,8 @@
-<?php
-
+<?php declare(strict_types=1);
 
 namespace Actiane\EntityChangeWatchBundle\Tests;
 
+use Actiane\EntityChangeWatchBundle\Listener\EntityModificationListener;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -15,11 +15,15 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class TestContainerPass implements CompilerPassInterface
 {
-
-    public function process(ContainerBuilder $container)
+    /**
+     * @param ContainerBuilder $container
+     */
+    public function process(ContainerBuilder $container): void
     {
-        foreach ($container->getDefinitions() as $id => $definition) {
-            $definition->setPublic(true);
+        foreach ($container->getDefinitions() as $definition) {
+            if (EntityModificationListener::class === $definition->getClass()) {
+                $definition->setPublic(true);
+            }
         }
     }
 }

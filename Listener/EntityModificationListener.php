@@ -1,28 +1,18 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Actiane\EntityChangeWatchBundle\Listener;
-
 
 use Actiane\EntityChangeWatchBundle\Generator\LifecycleCallableGenerator;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  * Class EntityModificationListener
- * @package Actiane\EntityChangeWatchBundle\Listener
  */
 class EntityModificationListener
 {
-    /**
-     * @var array
-     */
-    private $callable = [];
-
-    /**
-     * @var LifecycleCallableGenerator
-     */
-    private $lifecycleCallableGenerator;
+    private array $callable = [];
+    private LifecycleCallableGenerator $lifecycleCallableGenerator;
 
     /**
      * @param LifecycleCallableGenerator $lifecycleCallableGenerator
@@ -37,7 +27,7 @@ class EntityModificationListener
      *
      * @param OnFlushEventArgs $eventArgs
      */
-    public function onFlush(OnFlushEventArgs $eventArgs)
+    public function onFlush(OnFlushEventArgs $eventArgs): void
     {
         $entityManager = $eventArgs->getEntityManager();
         $this->callable = $this->lifecycleCallableGenerator->generateLifeCycleCallable(
@@ -61,7 +51,7 @@ class EntityModificationListener
      *
      * @param PostFlushEventArgs $eventArgs
      */
-    public function postFlush(PostFlushEventArgs $eventArgs)
+    public function postFlush(PostFlushEventArgs $eventArgs): void
     {
         foreach ($this->callable as $key => $callableItem) {
             unset($this->callable[$key]);

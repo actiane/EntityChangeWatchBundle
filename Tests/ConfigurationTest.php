@@ -1,5 +1,4 @@
-<?php
-
+<?php declare(strict_types = 1);
 
 namespace Actiane\EntityChangeWatchBundle\Tests;
 
@@ -7,15 +6,20 @@ use Actiane\EntityChangeWatchBundle\DependencyInjection\Configuration;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Yaml\Yaml;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback;
+use Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity;
 
 /**
  * Class ConfigurationTest
+ *
  * @package Actiane\EntityChangeWatchBundle\Tests
  */
 class ConfigurationTest extends KernelTestCase
 {
-
-    private $validYaml = <<<YAML
+    private string $validYaml = <<<YAML
 classes:
     Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity:
         create:
@@ -29,8 +33,7 @@ classes:
         delete:
             - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback', method: 'testDelete', flush: false}
 YAML;
-
-    private $classDontExistYaml = <<<YAML
+    private string $classDontExistYaml = <<<YAML
 classes:
     i\dont\exist:
         create:
@@ -45,20 +48,20 @@ classes:
             - {name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback', method: 'testDelete', flush: false}
 YAML;
 
-
     /**
      * @dataProvider dataTestConfiguration
+     *
+     * @small
      *
      * @param mixed $inputConfig
      * @param mixed $expectedConfig
      */
-    public function testConfiguration($inputConfig, $expectedConfig)
+    public function testConfiguration($inputConfig, $expectedConfig): void
     {
         $configuration = new Configuration();
 
         $node = $configuration->getConfigTreeBuilder()
-                              ->buildTree()
-        ;
+            ->buildTree();
         $normalizedConfig = $node->normalize($inputConfig);
         $finalizedConfig = $node->finalize($normalizedConfig);
 
@@ -68,9 +71,11 @@ YAML;
     /**
      * @dataProvider dataTestConfigurationInvalid
      *
+     * @small
+     *
      * @param mixed $inputConfig
      */
-    public function testConfigurationInvalid($inputConfig)
+    public function testConfigurationInvalid($inputConfig): void
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage(
@@ -79,23 +84,25 @@ YAML;
         $configuration = new Configuration();
 
         $node = $configuration->getConfigTreeBuilder()
-                              ->buildTree()
-        ;
+            ->buildTree();
         $normalizedConfig = $node->normalize($inputConfig);
         $node->finalize($normalizedConfig);
     }
 
-    public function dataTestConfiguration()
+    /**
+     * @return array[]
+     */
+    public function dataTestConfiguration(): array
     {
         return [
             'test configuration' => [
                 Yaml::parse($this->validYaml),
                 [
                     'classes' => [
-                        'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity' => [
+                        Entity::class => [
                             'create' => [
                                 [
-                                    'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback',
+                                    'name' => EntityCreateCallback::class,
                                     'method' => 'testCreate',
                                     'flush' => false,
                                 ],
@@ -105,7 +112,7 @@ YAML;
                             'update' => [
                                 'all' => [
                                     [
-                                        'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback',
+                                        'name' => EntityUpdateCallback::class,
                                         'method' => 'testUpdate',
                                         'flush' => false,
                                     ],
@@ -115,7 +122,7 @@ YAML;
                                 'properties' => [
                                     'subEntities' => [
                                         [
-                                            'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateSubEntitiesCallback',
+                                            'name' => EntityUpdateSubEntitiesCallback::class,
                                             'method' => 'testUpdateSubEntities',
                                             'flush' => false,
                                         ],
@@ -128,7 +135,7 @@ YAML;
 
                             'delete' => [
                                 [
-                                    'name' => 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityDeleteCallback',
+                                    'name' => EntityDeleteCallback::class,
                                     'method' => 'testDelete',
                                     'flush' => false,
                                 ],
@@ -143,7 +150,10 @@ YAML;
         ];
     }
 
-    public function dataTestConfigurationInvalid()
+    /**
+     * @return array[]
+     */
+    public function dataTestConfigurationInvalid(): array
     {
         return [
             'test configuration' => [

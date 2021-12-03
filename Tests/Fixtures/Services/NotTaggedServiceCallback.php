@@ -1,13 +1,10 @@
-<?php
-
+<?php declare(strict_types = 1);
 
 namespace Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services;
 
 /**
  * Class NotTaggedServiceCallback
- * @package Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services
  */
 class NotTaggedServiceCallback
 {
-
 }

@@ -1,10 +1,4 @@
 <?php declare(strict_types = 1);
-/**
- * Created by PhpStorm.
- * User: nicolas
- * Date: 23/10/18
- * Time: 16:39
- */
 
 namespace Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity;
 
@@ -16,24 +10,20 @@ use Doctrine\ORM\Mapping as ORM;
 class SubEntityOneToOne
 {
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    private $id;
-
+    private ?int $id = null;
     /**
-     * @var string
      * @ORM\Column(type="string")
      */
-    private $field;
+    private ?string $field = null;
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -43,7 +33,7 @@ class SubEntityOneToOne
      *
      * @return SubEntityOneToOne
      */
-    public function setId(int $id)
+    public function setId(int $id): SubEntityOneToOne
     {
         $this->id = $id;
 
@@ -51,9 +41,9 @@ class SubEntityOneToOne
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getField()
+    public function getField(): ?string
     {
         return $this->field;
     }
@@ -63,7 +53,7 @@ class SubEntityOneToOne
      *
      * @return SubEntityOneToOne
      */
-    public function setField(string $field)
+    public function setField(string $field): SubEntityOneToOne
     {
         $this->field = $field;
 
