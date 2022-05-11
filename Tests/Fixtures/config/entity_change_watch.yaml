@@ -3,6 +3,7 @@ entity_change_watch:
         Actiane\EntityChangeWatchBundle\Tests\Fixtures\Entity\Entity:
             create:
                 - { name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback', method: 'testCreate', flush: false }
+                - { name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityCreateCallback', method: 'testWithoutEntityManagerParam', flush: false }
             update:
                 all:
                     - { name: 'Actiane\EntityChangeWatchBundle\Tests\Fixtures\Services\EntityUpdateCallback', method: 'testUpdate', flush: false }

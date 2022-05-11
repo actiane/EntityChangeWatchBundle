@@ -12,13 +12,14 @@ class EntityCreateCallback
 {
     public bool $testCreateAccess = false;
     public bool $testCreateAfterAccess = false;
+    public bool $testResultWithoutEntityManager = false;
 
     /**
      * @param Entity                 $entity
      * @param                        $changedProperties
      * @param EntityManagerInterface $entityManager
      */
-    public function testCreate(Entity $entity, $changedProperties, EntityManagerInterface $entityManager)
+    public function testCreate(Entity $entity, $changedProperties)
     {
         $this->testCreateAccess = true;
     }
@@ -33,6 +34,10 @@ class EntityCreateCallback
         $this->testCreateAfterAccess = true;
     }
 
+    public function testWithoutEntityManagerParam(Entity $entity): void {
+        $this->testResultWithoutEntityManager = true;
+    }
+
     /**
      *
      */
@@ -40,5 +45,6 @@ class EntityCreateCallback
     {
         $this->testCreateAccess = false;
         $this->testCreateAfterAccess = false;
+        $this->testResultWithoutEntityManager = false;
     }
 }

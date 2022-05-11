@@ -39,9 +39,11 @@ class EntityModificationListener
                 continue;
             }
             unset($this->callable[$key]);
-            call_user_func_array(
+            call_user_func(
                 $callableItem['callable'],
-                $callableItem['parameters'] + ['entityManager' => $entityManager]
+                $callableItem['parameters']['entity'],
+                $callableItem['parameters']['changedProperties'],
+                $entityManager
             );
         }
     }
@@ -55,9 +57,11 @@ class EntityModificationListener
     {
         foreach ($this->callable as $key => $callableItem) {
             unset($this->callable[$key]);
-            call_user_func_array(
+            call_user_func(
                 $callableItem['callable'],
-                $callableItem['parameters'] + ['entityManager' => $eventArgs->getEntityManager()]
+                $callableItem['parameters']['entity'],
+                $callableItem['parameters']['changedProperties'],
+                $eventArgs->getEntityManager()
             );
         }
     }
