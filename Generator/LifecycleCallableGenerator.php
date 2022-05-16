@@ -77,7 +77,7 @@ class LifecycleCallableGenerator
         }
 
         foreach ($this->entityWatch[$className][$state] as $action) {
-            $callable += $this->callableGenerator->generateCallable($action, $entity);
+            $callable += $this->callableGenerator->generateCallable($entity, $action);
         }
     }
 
@@ -99,15 +99,15 @@ class LifecycleCallableGenerator
 
         $entityWatch = $this->entityWatch[$className]['update'];
         foreach ($entityWatch['all'] as $action) {
-            $callable += $this->callableGenerator->generateCallable($action, $entity, $changedProperties);
+            $callable += $this->callableGenerator->generateCallable($entity, $action, $changedProperties);
         }
 
         foreach ($entityWatch['properties'] as $propertyName => $actions) {
             if (array_key_exists($propertyName, $changedProperties)) {
                 foreach ($actions as $action) {
                     $callable += $this->callableGenerator->generateCallable(
-                        $action,
                         $entity,
+                        $action,
                         $changedProperties
                     );
                 }
